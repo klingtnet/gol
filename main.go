@@ -39,10 +39,10 @@ func main() {
 		homePageTemplate.Execute(w, m)
 	})
 
-	newPageTemplate := template.Must(template.New("new").Parse(newPageTemplateStr))
+	createPostTemplate := template.Must(template.New("create").Parse(createPostTemplateStr))
 
-	http.HandleFunc("/new", func(w http.ResponseWriter, r *http.Request) {
-		newPageTemplate.Execute(w, nil)
+	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
+		createPostTemplate.Execute(w, nil)
 	})
 
 	fmt.Println("Listening on http://0.0.0.0:5000")
@@ -73,7 +73,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 	</body>
 </html>`
 
-var newPageTemplateStr = `<!DOCTYPE html>
+var createPostTemplateStr = `<!DOCTYPE html>
 <html lang=en>
 	<head>
 		<title>{{ .title }}</title>
