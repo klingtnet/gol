@@ -149,20 +149,17 @@ func main() {
 	})
 
 	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := mux.Vars(r)["id"]
+		post := findPost(posts, id)
 		if r.Method == "GET" {
-			id := mux.Vars(r)["id"]
-			post := findPost(posts, id)
 			if post != nil {
 				json.NewEncoder(w).Encode(post)
 			} else {
-				w.WriteHeader(http.StatusNotFound)
-				w.Write([]byte("not found"))
+				http.NotFound(w, r)
 			}
 		} else if r.Method == "HEAD" {
-			id := mux.Vars(r)["id"]
-			post := findPost(posts, id)
 			if post == nil {
-				w.WriteHeader(http.StatusNotFound)
+				http.NotFound(w, r)
 			}
 		}
 	})
