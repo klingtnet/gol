@@ -125,6 +125,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 				<h1>{{ $post.Title }}</h1>
 
 				{{ $post.Content | markdown }}
+				<hr />
 			{{ end }}
 		</div>
 
