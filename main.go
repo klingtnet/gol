@@ -57,6 +57,10 @@ func main() {
 			htmlContent := blackfriday.MarkdownCommon([]byte(content))
 			return template.HTML(htmlContent)
 		},
+		"formatTime": func(t time.Time) string {
+			// thanks, http://fuckinggodateformat.com/ (every language/template thingy should have this)
+			return t.Format("January 2, 2006 (15:04)")
+		},
 	}
 	homePageTemplate := template.New("homepage").Funcs(templateUtils)
 	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
@@ -126,8 +130,10 @@ var homePageTemplateStr = `<!DOCTYPE html>
 
 			{{ range $post := .posts }}
 				<h1>{{ $post.Title }}</h1>
+				<h5>Posted on <i>{{ $post.Created | formatTime }}</i></h5>
 
 				{{ $post.Content | markdown }}
+
 				<hr />
 			{{ end }}
 		</div>
