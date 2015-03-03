@@ -69,9 +69,9 @@ func writePosts(filename string, posts []Post) error {
 }
 
 func findPost(posts []Post, id string) *Post {
-	for _, post := range posts {
+	for i, post := range posts {
 		if post.Id == id {
-			return &post
+			return &posts[i]
 		}
 	}
 
