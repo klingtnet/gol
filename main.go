@@ -8,9 +8,15 @@ import (
 	"net/http"
 )
 
+type Post struct {
+	Title   string
+	Content string
+}
+
 func main() {
-	var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
-	var content = blackfriday.MarkdownCommon([]byte(`# gol
+	post := Post{
+		Title: "My First Post!",
+		Content: `# gol
 
 ## subheading
 
@@ -19,13 +25,15 @@ func main() {
 - a
 - list
 
-[source](https://github.com/KLINGTdotNET/gol)`))
+[source](https://github.com/KLINGTdotNET/gol)`}
+
+	var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		m := make(map[string]interface{})
-		m["title"] = "gol"
-		m["message"] = "Hello, World!"
-		m["content"] = template.HTML(content)
+		m["title"] = post.Title
+		htmlContent := blackfriday.MarkdownCommon([]byte(post.Content))
+		m["content"] = template.HTML(htmlContent)
 		homePageTemplate.Execute(w, m)
 	})
 
@@ -41,8 +49,6 @@ var homePageTemplateStr = `<!DOCTYPE html>
 
 	<body>
 		<h1>{{ .title }}</h1>
-
-		<p>{{ .message }}</p>
 
 		{{ .content }}	
 	</body>
