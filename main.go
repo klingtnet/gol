@@ -60,6 +60,11 @@ func main() {
 	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		posts, err = readPosts("posts.json")
+		if err != nil {
+			log.Println("Warning: Could not read posts.json:", err)
+		}
 		m := make(map[string]interface{})
 		m["title"] = "gol"
 		m["posts"] = posts
