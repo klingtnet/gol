@@ -14,9 +14,10 @@ type Post struct {
 }
 
 func main() {
-	post := Post{
-		Title: "My First Post!",
-		Content: `# gol
+	posts := []Post{
+		Post{
+			Title: "My First Post!",
+			Content: `# gol
 
 ## subheading
 
@@ -25,15 +26,25 @@ func main() {
 - a
 - list
 
-[source](https://github.com/KLINGTdotNET/gol)`}
+[source](https://github.com/KLINGTdotNET/gol)`},
+		Post{
+			Title:   "A second post",
+			Content: `There is some beauty in *conciseness*!`},
+	}
 
-	var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
+	templateUtils := template.FuncMap{
+		"markdown": func(content string) template.HTML {
+			htmlContent := blackfriday.MarkdownCommon([]byte(content))
+			return template.HTML(htmlContent)
+		},
+	}
+	homePageTemplate := template.New("homepage").Funcs(templateUtils)
+	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		m := make(map[string]interface{})
-		m["title"] = post.Title
-		htmlContent := blackfriday.MarkdownCommon([]byte(post.Content))
-		m["content"] = template.HTML(htmlContent)
+		m["title"] = "gol"
+		m["posts"] = posts
 		homePageTemplate.Execute(w, m)
 	})
 
@@ -51,9 +62,13 @@ var homePageTemplateStr = `<!DOCTYPE html>
 
 	<body>
 		<div class="container">
-			<h1>{{ .title }}</h1>
+			<p>All posts...</p>
 
-			{{ .content }}
+			{{ range $post := .posts }}
+				<h1>{{ $post.Title }}</h1>
+
+				{{ $post.Content | markdown }}
+			{{ end }}
 		</div>
 	</body>
 </html>`
