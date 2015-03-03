@@ -97,6 +97,11 @@ var createPostTemplateStr = `<!DOCTYPE html>
 				<textarea class="materialize-textarea" name="content" rows="50" cols="120"></textarea>
 				<label for="content">Your thoughts.</label>
 			</div>
+
+
+			<button class="btn waves-effect waves-light" type="submit" name="action">
+				Submit
+			</button>
 		</div>
 
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
