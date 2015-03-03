@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/russross/blackfriday"
 	"html/template"
 	"log"
 	"net/http"
@@ -9,11 +10,22 @@ import (
 
 func main() {
 	var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
+	var content = blackfriday.MarkdownCommon([]byte(`# gol
+
+## subheading
+
+- I
+- am
+- a
+- list
+
+[source](https://github.com/KLINGTdotNET/gol)`))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		m := make(map[string]interface{})
 		m["title"] = "gol"
 		m["message"] = "Hello, World!"
+		m["content"] = template.HTML(content)
 		homePageTemplate.Execute(w, m)
 	})
 
@@ -31,5 +43,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 		<h1>{{ .title }}</h1>
 
 		<p>{{ .message }}</p>
+
+		{{ .content }}	
 	</body>
 </html>`
