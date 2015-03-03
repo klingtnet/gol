@@ -183,6 +183,19 @@ func main() {
 		}
 	})
 
+	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
+		id := mux.Vars(r)["id"]
+		post := findPost(posts, id)
+		if post != nil {
+			m := make(map[string]interface{})
+			m["title"] = "Edit post"
+			m["post"] = post
+			createPostTemplate.Execute(w, m)
+		} else {
+			http.NotFound(w, r)
+		}
+	})
+
 	// http.HandleFunc("/posts", ...) // GET = display all posts
 	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
 
@@ -232,8 +245,8 @@ var homePageTemplateStr = `<!DOCTYPE html>
 			{{ range $post := .posts }}
 			<article class="post">
 				<div class="post-actions">
-					<a href="/edit" class="btn-floating waves-effect waves-light blue"><i class="mdi-editor-mode-edit"></i></a>
-					<a href="/edit" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
+					<a href="/posts/{{ $post.Id }}/edit" class="btn-floating waves-effect waves-light blue"><i class="mdi-editor-mode-edit"></i></a>
+					<a href="/posts/{{ $post.Id }}/delete" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
 				</div>
 				<h1><a href="/posts/{{ $post.Id }}">{{ $post.Title }}</a></h1>
 				<h5>Posted on <i>{{ $post.Created | formatTime }}</i></h5>
@@ -266,13 +279,13 @@ var createPostTemplateStr = `<!DOCTYPE html>
 		<div class="container">
 			<h1>Write a new post!</h1>
 
-			<form method="POST" action="/posts">
+			<form method="POST" action="/posts{{ if .post.Id }}/{{ .post.Id }}{{ end }}">
 				<div class="input-field">
-					<input name="title" type="text"></input>
+					<input name="title" type="text" value="{{ .post.Title }}"></input>
 					<label for="title">Titlemania</label>
 				</div>
 				<div class="input-field">
-					<textarea class="materialize-textarea" name="content" rows="50" cols="120"></textarea>
+					<textarea class="materialize-textarea" name="content" rows="50" cols="120">{{ .post.Content }}</textarea>
 					<label for="content">Your thoughts.</label>
 				</div>
 
