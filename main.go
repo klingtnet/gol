@@ -1,36 +1,27 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/russross/blackfriday"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
 
 type Post struct {
-	Title   string
-	Content string
+	Title   string `json:title`
+	Content string `json:content`
 }
 
 func main() {
-	posts := []Post{
-		Post{
-			Title: "My First Post!",
-			Content: `# gol
-
-## subheading
-
-- I
-- am
-- a
-- list
-
-[source](https://github.com/KLINGTdotNET/gol)`},
-		Post{
-			Title:   "A second post",
-			Content: `There is some beauty in *conciseness*!`},
+	var posts []Post
+	postsJson, err := ioutil.ReadFile("posts.json")
+	if err != nil {
+		log.Fatal(err)
 	}
+	json.Unmarshal(postsJson, &posts)
 
 	templateUtils := template.FuncMap{
 		"markdown": func(content string) template.HTML {
