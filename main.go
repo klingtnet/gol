@@ -136,24 +136,43 @@ var homePageTemplateStr = `<!DOCTYPE html>
 			#edit-button {
 				top: 23px;
 			}
+
+			.post .post-actions {
+				visibility: hidden;
+				float: right;
+			}
+
+			.post:hover .post-actions {
+				visibility: visible;
+			}
+
+			.post .post-content {
+				font-size: 1.414rem;
+				line-height: 1.8rem;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="container">
 			<div id="edit-button" class="fixed-action-btn">
-				<a href="/create" class="btn-floating btn-large waves-effect waves-light red"><i class="mdi-editor-mode-edit"></i></a>
+				<a href="/create" class="btn-floating btn-large waves-effect waves-light blue"><i class="mdi-content-add"></i></a>
 			</div>
 
-			<p>All posts...</p>
-
 			{{ range $post := .posts }}
+			<article class="post">
+				<div class="post-actions">
+					<a href="/edit" class="btn-floating waves-effect waves-light blue"><i class="mdi-editor-mode-edit"></i></a>
+					<a href="/edit" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
+				</div>
 				<h1>{{ $post.Title }}</h1>
 				<h5>Posted on <i>{{ $post.Created | formatTime }}</i></h5>
 
-				{{ $post.Content | markdown }}
-
-				<hr />
+				<div class="post-content flow-text">
+					{{ $post.Content | markdown }}
+				</div>
+			</article>
+			<hr />
 			{{ end }}
 		</div>
 
