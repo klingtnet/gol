@@ -15,13 +15,26 @@ type Post struct {
 	Content string `json:"content"`
 }
 
-func main() {
+func readPosts(filename string) ([]Post, error) {
 	var posts []Post
 	postsJson, err := ioutil.ReadFile("posts.json")
 	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(postsJson, &posts)
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func main() {
+	posts, err := readPosts("posts.json")
+	if err != nil {
 		log.Fatal(err)
 	}
-	json.Unmarshal(postsJson, &posts)
 
 	templateUtils := template.FuncMap{
 		"markdown": func(content string) template.HTML {
