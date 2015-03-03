@@ -161,6 +161,25 @@ func main() {
 			if post == nil {
 				http.NotFound(w, r)
 			}
+		} else if r.Method == "POST" {
+			if post == nil {
+				http.NotFound(w, r)
+			}
+
+			var newPost Post
+			err := json.NewDecoder(r.Body).Decode(&newPost)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			}
+
+			if newPost.Title != "" {
+				post.Title = newPost.Title
+			}
+			if newPost.Content != "" {
+				post.Content = newPost.Content
+			}
+			writePosts("posts.json", posts)
+			json.NewEncoder(w).Encode(post)
 		}
 	})
 
