@@ -8,8 +8,9 @@ import (
 )
 
 func main() {
+	var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
 		m := make(map[string]interface{})
 		m["title"] = "gol"
 		m["message"] = "Hello, World!"
