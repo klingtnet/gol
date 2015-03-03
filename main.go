@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"github.com/russross/blackfriday"
@@ -13,6 +15,7 @@ import (
 )
 
 type Post struct {
+	Id      string    `json:"id"`
 	Title   string    `json:"title"`
 	Content string    `json:"content"`
 	Created time.Time `json:"created"`
@@ -63,6 +66,12 @@ func writePosts(filename string, posts []Post) error {
 	return nil
 }
 
+func hashTime(t time.Time) []byte {
+	idBuf := make([]byte, 8+1)
+	binary.PutVarint(idBuf, t.UnixNano())
+	return idBuf
+}
+
 func main() {
 	posts, err := readPosts("posts.json")
 	if err != nil {
@@ -104,10 +113,12 @@ func main() {
 
 	http.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
+			now := time.Now()
 			post := Post{
+				Id:      fmt.Sprintf("%x", md5.Sum(hashTime(now))),
 				Title:   r.FormValue("title"),
 				Content: r.FormValue("content"),
-				Created: time.Now(),
+				Created: now,
 			}
 			posts, _ = readPosts("posts.json")
 			posts = append(posts, post)
