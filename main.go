@@ -30,6 +30,20 @@ func readPosts(filename string) ([]Post, error) {
 	return posts, nil
 }
 
+func writePosts(filename string, posts []Post) error {
+	postsJson, err := json.Marshal(posts)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(filename, postsJson, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	posts, err := readPosts("posts.json")
 	if err != nil {
@@ -64,8 +78,9 @@ func main() {
 				Title:   r.FormValue("title"),
 				Content: r.FormValue("content"),
 			}
-			postJson, _ := json.Marshal(post)
-			w.Write(postJson)
+			posts, _ = readPosts("posts.json")
+			posts = append(posts, post)
+			writePosts("posts.json", posts)
 		} else { // TODO: GET list all posts
 			w.WriteHeader(http.StatusNotImplemented)
 			w.Write([]byte("not implemented"))
