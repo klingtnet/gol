@@ -125,7 +125,7 @@ func main() {
 
 	createPostTemplate := template.Must(template.New("create").Parse(createPostTemplateStr))
 
-	router.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
 		createPostTemplate.Execute(w, map[string]string{"title": "Write a new post!"})
 	})
 
@@ -249,7 +249,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 	<body>
 		<div class="container">
 			<div id="edit-button" class="fixed-action-btn">
-				<a href="/create" class="btn-floating btn-large waves-effect waves-light blue"><i class="mdi-content-add"></i></a>
+				<a href="/posts/new" class="btn-floating btn-large waves-effect waves-light blue"><i class="mdi-content-add"></i></a>
 			</div>
 
 			{{ range $post := .posts }}
