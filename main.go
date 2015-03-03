@@ -2,16 +2,33 @@ package main
 
 import (
 	"fmt"
-	"html"
+	"html/template"
 	"log"
 	"net/http"
 )
 
 func main() {
-	http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		var homePageTemplate = template.Must(template.New("homepage").Parse(homePageTemplateStr))
+		m := make(map[string]interface{})
+		m["title"] = "gol"
+		m["message"] = "Hello, World!"
+		homePageTemplate.Execute(w, m)
 	})
 
 	fmt.Println("Listening on http://0.0.0.0:5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
 }
+
+var homePageTemplateStr = `<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>{{ .title }}</title>
+	</head>
+
+	<body>
+		<h1>{{ .title }}</h1>
+
+		<p>{{ .message }}</p>
+	</body>
+</html>`
