@@ -133,7 +133,7 @@ func main() {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := Post{
-				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now))),
+				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
 				Title:   r.FormValue("title"),
 				Content: r.FormValue("content"),
 				Created: now,
