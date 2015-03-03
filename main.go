@@ -106,10 +106,19 @@ var homePageTemplateStr = `<!DOCTYPE html>
 		<title>{{ .title }}</title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<style>
+			#edit-button {
+				top: 23px;
+			}
+		</style>
 	</head>
 
 	<body>
 		<div class="container">
+			<div id="edit-button" class="fixed-action-btn">
+				<a href="/create" class="btn-floating btn-large waves-effect waves-light red"><i class="mdi-editor-mode-edit"></i></a>
+			</div>
+
 			<p>All posts...</p>
 
 			{{ range $post := .posts }}
