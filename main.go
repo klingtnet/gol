@@ -126,7 +126,7 @@ func main() {
 	createPostTemplate := template.Must(template.New("create").Parse(createPostTemplateStr))
 
 	router.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
-		createPostTemplate.Execute(w, nil)
+		createPostTemplate.Execute(w, map[string]string{"title": "Write a new post!"})
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
@@ -287,7 +287,7 @@ var createPostTemplateStr = `<!DOCTYPE html>
 
 	<body>
 		<div class="container">
-			<h1>Write a new post!</h1>
+			<h1>{{ .title }}</h1>
 
 			<form method="POST" action="/posts{{ if .post.Id }}/{{ .post.Id }}{{ end }}">
 				<div class="input-field">
