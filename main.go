@@ -57,9 +57,11 @@ func main() {
 			htmlContent := blackfriday.MarkdownCommon([]byte(content))
 			return template.HTML(htmlContent)
 		},
-		"formatTime": func(t time.Time) string {
+		"formatTime": func(t time.Time) template.HTML {
 			// thanks, http://fuckinggodateformat.com/ (every language/template thingy should have this)
-			return t.Format("January 2, 2006 (15:04)")
+			isoDate := t.Format(time.RFC3339)
+			readableDate := t.Format("January 2, 2006 (15:04)")
+			return template.HTML(fmt.Sprintf("<time datetime=\"%s\">%s</time>", isoDate, readableDate))
 		},
 	}
 	homePageTemplate := template.New("homepage").Funcs(templateUtils)
