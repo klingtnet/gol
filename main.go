@@ -45,11 +45,15 @@ var homePageTemplateStr = `<!DOCTYPE html>
 <html lang=en>
 	<head>
 		<title>{{ .title }}</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 	</head>
 
 	<body>
-		<h1>{{ .title }}</h1>
+		<div class="container">
+			<h1>{{ .title }}</h1>
 
-		{{ .content }}	
+			{{ .content }}
+		</div>
 	</body>
 </html>`
