@@ -141,7 +141,9 @@ func main() {
 			posts, _ = readPosts("posts.json")
 			posts = append(posts, post)
 			writePosts("posts.json", posts)
-			json.NewEncoder(w).Encode(post)
+
+			w.Header().Set("Location", "/")
+			w.WriteHeader(http.StatusSeeOther)
 		} else { // TODO: GET list all posts
 			w.WriteHeader(http.StatusNotImplemented)
 			w.Write([]byte("not implemented"))
