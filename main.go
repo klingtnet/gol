@@ -45,6 +45,10 @@ func main() {
 		createPostTemplate.Execute(w, nil)
 	})
 
+	// http.HandleFunc("/posts", ...) // GET = display all posts
+	// http.HandleFunc("/posts", ...) // POST = create a new post
+	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
+
 	fmt.Println("Listening on http://0.0.0.0:5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
 }
