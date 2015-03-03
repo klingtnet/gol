@@ -167,9 +167,16 @@ func main() {
 			}
 
 			var newPost Post
-			err := json.NewDecoder(r.Body).Decode(&newPost)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
+			if r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
+				newPost.Title = r.FormValue("title")
+				newPost.Content = r.FormValue("content")
+				w.Header().Set("Location", "/")
+				w.WriteHeader(http.StatusAccepted)
+			} else { // assume it's JSON
+				err := json.NewDecoder(r.Body).Decode(&newPost)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+				}
 			}
 
 			if newPost.Title != "" {
