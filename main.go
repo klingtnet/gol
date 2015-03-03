@@ -68,6 +68,16 @@ func writePosts(filename string, posts []Post) error {
 	return nil
 }
 
+func findPost(posts []Post, id string) *Post {
+	for _, post := range posts {
+		if post.Id == id {
+			return &post
+		}
+	}
+
+	return nil
+}
+
 func toByteSlice(data interface{}) []byte {
 	buf := new(bytes.Buffer)
 	err := binary.Write(buf, binary.LittleEndian, data)
@@ -138,6 +148,17 @@ func main() {
 		}
 	})
 
+	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := mux.Vars(r)["id"]
+		post := findPost(posts, id)
+		if post != nil {
+			json.NewEncoder(w).Encode(post)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("not found"))
+		}
+	})
+
 	// http.HandleFunc("/posts", ...) // GET = display all posts
 	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
 
@@ -190,7 +211,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 					<a href="/edit" class="btn-floating waves-effect waves-light blue"><i class="mdi-editor-mode-edit"></i></a>
 					<a href="/edit" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
 				</div>
-				<h1>{{ $post.Title }}</h1>
+				<h1><a href="/posts/{{ $post.Id }}">{{ $post.Title }}</a></h1>
 				<h5>Posted on <i>{{ $post.Created | formatTime }}</i></h5>
 
 				<div class="post-content flow-text">
