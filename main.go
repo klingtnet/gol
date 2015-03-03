@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/russross/blackfriday"
 	"html/template"
 	"io/ioutil"
@@ -98,7 +99,9 @@ func main() {
 	homePageTemplate := template.New("homepage").Funcs(templateUtils)
 	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		posts, err = readPosts("posts.json")
 		if err != nil {
@@ -112,11 +115,11 @@ func main() {
 
 	createPostTemplate := template.Must(template.New("create").Parse(createPostTemplateStr))
 
-	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		createPostTemplate.Execute(w, nil)
 	})
 
-	http.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := Post{
@@ -137,6 +140,8 @@ func main() {
 
 	// http.HandleFunc("/posts", ...) // GET = display all posts
 	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
+
+	http.Handle("/", r)
 
 	fmt.Println("Listening on http://0.0.0.0:5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
