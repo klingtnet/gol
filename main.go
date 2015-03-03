@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/binary"
 	"encoding/json"
@@ -66,10 +67,14 @@ func writePosts(filename string, posts []Post) error {
 	return nil
 }
 
-func hashTime(t time.Time) []byte {
-	idBuf := make([]byte, 8+1)
-	binary.PutVarint(idBuf, t.UnixNano())
-	return idBuf
+func toByteSlice(data interface{}) []byte {
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, binary.LittleEndian, data)
+	if err != nil {
+		log.Println("Error: binary.Write failed:", err)
+		return []byte{}
+	}
+	return buf.Bytes()
 }
 
 func main() {
@@ -115,7 +120,7 @@ func main() {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := Post{
-				Id:      fmt.Sprintf("%x", md5.Sum(hashTime(now))),
+				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now))),
 				Title:   r.FormValue("title"),
 				Content: r.FormValue("content"),
 				Created: now,
