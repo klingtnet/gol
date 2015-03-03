@@ -11,8 +11,8 @@ import (
 )
 
 type Post struct {
-	Title   string `json:title`
-	Content string `json:content`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 func main() {
@@ -45,8 +45,21 @@ func main() {
 		createPostTemplate.Execute(w, nil)
 	})
 
+	http.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" { // POST creates a new post
+			post := Post{
+				Title:   r.FormValue("title"),
+				Content: r.FormValue("content"),
+			}
+			postJson, _ := json.Marshal(post)
+			w.Write(postJson)
+		} else { // TODO: GET list all posts
+			w.WriteHeader(http.StatusNotImplemented)
+			w.Write([]byte("not implemented"))
+		}
+	})
+
 	// http.HandleFunc("/posts", ...) // GET = display all posts
-	// http.HandleFunc("/posts", ...) // POST = create a new post
 	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
 
 	fmt.Println("Listening on http://0.0.0.0:5000")
@@ -89,19 +102,21 @@ var createPostTemplateStr = `<!DOCTYPE html>
 		<div class="container">
 			<h1>Write a new post!</h1>
 
-			<div class="input-field">
-				<input name="title" type="text"></input>
-				<label for="title">Titlemania</label>
-			</div>
-			<div class="input-field">
-				<textarea class="materialize-textarea" name="content" rows="50" cols="120"></textarea>
-				<label for="content">Your thoughts.</label>
-			</div>
+			<form method="POST" action="/posts">
+				<div class="input-field">
+					<input name="title" type="text"></input>
+					<label for="title">Titlemania</label>
+				</div>
+				<div class="input-field">
+					<textarea class="materialize-textarea" name="content" rows="50" cols="120"></textarea>
+					<label for="content">Your thoughts.</label>
+				</div>
 
 
-			<button class="btn waves-effect waves-light" type="submit" name="action">
-				Submit
-			</button>
+				<button class="btn waves-effect waves-light" type="submit" name="action">
+					Submit
+				</button>
+			</form>
 		</div>
 
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
