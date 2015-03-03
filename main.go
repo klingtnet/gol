@@ -39,6 +39,12 @@ func main() {
 		homePageTemplate.Execute(w, m)
 	})
 
+	newPageTemplate := template.Must(template.New("new").Parse(newPageTemplateStr))
+
+	http.HandleFunc("/new", func(w http.ResponseWriter, r *http.Request) {
+		newPageTemplate.Execute(w, nil)
+	})
+
 	fmt.Println("Listening on http://0.0.0.0:5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
 }
@@ -61,5 +67,35 @@ var homePageTemplateStr = `<!DOCTYPE html>
 				{{ $post.Content | markdown }}
 			{{ end }}
 		</div>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
+	</body>
+</html>`
+
+var newPageTemplateStr = `<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>{{ .title }}</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Write a new post!</h1>
+
+			<div class="input-field">
+				<input name="title" type="text"></input>
+				<label for="title">Titlemania</label>
+			</div>
+			<div class="input-field">
+				<textarea class="materialize-textarea" name="content" rows="50" cols="120"></textarea>
+				<label for="content">Your thoughts.</label>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
 	</body>
 </html>`
