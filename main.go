@@ -8,11 +8,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Post struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Title   string    `json:"title"`
+	Content string    `json:"content"`
+	Created time.Time `json:"created"`
 }
 
 func readPosts(filename string) ([]Post, error) {
@@ -82,6 +84,7 @@ func main() {
 			post := Post{
 				Title:   r.FormValue("title"),
 				Content: r.FormValue("content"),
+				Created: time.Now(),
 			}
 			posts, _ = readPosts("posts.json")
 			posts = append(posts, post)
