@@ -99,9 +99,9 @@ func main() {
 	homePageTemplate := template.New("homepage").Funcs(templateUtils)
 	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
 
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		posts, err = readPosts("posts.json")
 		if err != nil {
@@ -115,11 +115,11 @@ func main() {
 
 	createPostTemplate := template.Must(template.New("create").Parse(createPostTemplateStr))
 
-	r.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		createPostTemplate.Execute(w, nil)
 	})
 
-	r.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := Post{
@@ -141,7 +141,7 @@ func main() {
 	// http.HandleFunc("/posts", ...) // GET = display all posts
 	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
 
-	http.Handle("/", r)
+	http.Handle("/", router)
 
 	fmt.Println("Listening on http://0.0.0.0:5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
