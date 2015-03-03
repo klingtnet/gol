@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 	"time"
 )
 
@@ -15,6 +16,22 @@ type Post struct {
 	Title   string    `json:"title"`
 	Content string    `json:"content"`
 	Created time.Time `json:"created"`
+}
+
+type ByDate []Post
+
+func (p ByDate) Len() int           { return len(p) }
+func (p ByDate) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p ByDate) Less(i, j int) bool { return p[i].Created.Unix() < p[j].Created.Unix() }
+
+func Sort(sortable sort.Interface) sort.Interface {
+	sort.Sort(sortable)
+	return sortable
+}
+
+func Reverse(sortable sort.Interface) sort.Interface {
+	sort.Sort(sort.Reverse(sortable))
+	return sortable
 }
 
 func readPosts(filename string) ([]Post, error) {
@@ -75,7 +92,7 @@ func main() {
 		}
 		m := make(map[string]interface{})
 		m["title"] = "gol"
-		m["posts"] = posts
+		m["posts"] = Reverse(ByDate(posts))
 		homePageTemplate.Execute(w, m)
 	})
 
