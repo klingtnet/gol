@@ -147,11 +147,13 @@ func main() {
 		templates.ExecuteTemplate(w, "posts", m)
 	})
 
-	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
+	postsRouter := router.PathPrefix("/posts").Subrouter()
+
+	postsRouter.HandleFunc("/new", func(w http.ResponseWriter, r *http.Request) {
 		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
 	})
 
-	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
+	postsRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := Post{
@@ -170,7 +172,7 @@ func main() {
 		}
 	})
 
-	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {
+	postsRouter.HandleFunc("/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
 		post := findPost(posts, id)
 		if post == nil {
@@ -218,7 +220,7 @@ func main() {
 		}
 	})
 
-	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
+	postsRouter.HandleFunc("/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
 		post := findPost(posts, id)
 		if post != nil {
