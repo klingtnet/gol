@@ -1,5 +1,11 @@
 [
 	{
+		"id": "be49d7851372d54993af097ecc3be40a",
+		"title": "Pluggable storage backends",
+		"content": "We want to support multiple storage backends, at least `json` (continuing to support the current data), `sqlite` (or `sql` in general, as the driver is general anyway?). and maybe we can even support `datomic`, which would make Lucas very happy!\r\n\r\nWhat do we need?\r\n\r\n- store posts (create, update, delete, list)\r\n- store users (or at least it should be clear how to add support for users)\r\n\r\nOptional/fun:\r\n\r\n- search/querying (by date, reversed, by title, by matching title, by content, ...)\r\n\r\nHow could the interface look like?\r\n\r\n```go\r\n// storage_json is the package with the json backend\r\nstorage := storage_json.Open(\"posts.json\")\r\n\r\n// finding and updating posts\r\ntheAnswer, err := storage.FindPostById(\"42\")\r\ntheAnswer.Content = \"42\"\r\n\r\nerr = storage.Save(theAnswer)\r\n\r\n// creating posts\r\nnewPost := Post{/* ... */}\r\nerr = storage.Save(newPost) // maybe .Create?\r\n\r\n// maybe?\r\nstorage.Reload() // == storage_json.Open(\"...\") ??\r\n```",
+		"created": "2015-03-04T16:38:44.958490933+01:00"
+	},
+	{
 		"id": "8d182373c04316b42a433bb63be69014",
 		"title": "Sanity check",
 		"content": "## *Aka* let's see what we can do here...\r\n\r\nWe allow inline elements, like \u003ca href=\"/\"\u003ethis \u003cem\u003eshiny\u003c/em\u003e link\u003c/a\u003e, which even has an `em` element in it.\r\n\r\nWe also allow embedding images, at least I hope so, because we **need** kittens!\r\n\r\n\u003cimg src=\"http://www.helpinganimals.org/wp-content/uploads/2014/09/kitten_19023.jpg\" width=\"600px\" /\u003e\r\n\r\nWe also allow `iframe`s, even though we probably should restrict them to youtube and vimeo.\r\n\r\n\u003ciframe width=\"600\" height=\"400\" src=\"https://www.youtube.com/embed/598IdFlOXcQ\" frameborder=\"0\" allowfullscreen\u003e\u003c/iframe\u003e",
