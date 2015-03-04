@@ -1,8 +1,14 @@
 [
 	{
+		"id": "2e17c142291319144a7951d0c8dfce08",
+		"title": "More crazy ideas",
+		"content": "- a public feed\r\n- groups\r\n- ...",
+		"created": "2015-03-04T17:55:10.586950061+01:00"
+	},
+	{
 		"id": "0d585f4331987cbdb001cf1cfae38ff1",
 		"title": "Tomorrow",
-		"content": "- pair on pluggable storage backends (json together, then Andreas sqlite and Lucas datomic)\r\n- escape cancels post editing (*with* confirmation)\r\n- see [other ideas](/#post-f02d5a77c0f4a4953b856e5397df3d01)\r\n\r\n![unicorn](https://lilymichaud.files.wordpress.com/2007/09/unicorns_csg010.jpg)",
+		"content": "- pair on pluggable storage backends (json together, then Andreas sqlite and Lucas datomic)\r\n- escape cancels post editing (*with* confirmation)\r\n- listen on `$PORT`\r\n- support specifying a location for `posts.json` (for local deployment)\r\n- see [other ideas](/#post-f02d5a77c0f4a4953b856e5397df3d01)\r\n\r\n![unicorn](https://lilymichaud.files.wordpress.com/2007/09/unicorns_csg010.jpg)",
 		"created": "2015-03-04T17:50:24.03373836+01:00"
 	},
 	{
@@ -76,11 +82,5 @@
 		"title": "Tadum!",
 		"content": "Hello again... (with time???)",
 		"created": "2015-03-03T13:36:01.265284209+01:00"
-	},
-	{
-		"id": "2e17c142291319144a7951d0c8dfce08",
-		"title": "More crazy ideas",
-		"content": "- a public feed\r\n- groups\r\n- ...",
-		"created": "2015-03-04T17:55:10.586950061+01:00"
 	}
 ]
