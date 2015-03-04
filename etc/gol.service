@@ -1,0 +1,11 @@
+[Unit]
+Description=gol - A personal log book
+
+[Service]
+User=nobody
+Group=nobody
+ExecStart=/usr/bin/env gol
+WorkingDirectory=/tmp
+
+[Install]
+WantedBy=multi-user.target
