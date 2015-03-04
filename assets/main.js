@@ -13,13 +13,15 @@
     // listen on shift+tab
     function tabOverride() {
         var textarea = document.querySelector("textarea");
+        if (textarea == null) { return }
         textarea.onkeydown = function (e) {
             if (e.shiftKey && e.keyCode === 9) {
                 e.preventDefault();
-                var text = textarea.textContent;
+                var text = textarea.value;
                 var pos = textarea.selectionStart;
-                textarea.textContent = text.substr(0, pos) + '    ' + text.substr(pos);
+                textarea.value = text.substr(0, pos) + '    ' + text.substr(pos);
                 // select nothing
+                console.log(textarea.selectionStart, textarea.selectionEnd, textarea);
                 textarea.selectionStart = pos + 4;
                 textarea.selectionEnd = pos + 4;
             }
