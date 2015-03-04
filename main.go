@@ -253,7 +253,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 			</div>
 
 			{{ range $post := .posts }}
-			<article class="post">
+			<article id="post-{{ $post.Id }}" class="post">
 				<div class="post-actions">
 					<a href="/posts/{{ $post.Id }}/edit" class="btn-floating waves-effect waves-light blue"><i class="mdi-editor-mode-edit"></i></a>
 					<a href="/posts/{{ $post.Id }}/delete" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
