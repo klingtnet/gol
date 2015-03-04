@@ -256,7 +256,6 @@ func main() {
 	})
 
 	// http.HandleFunc("/posts", ...) // GET = display all posts
-	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
 
 	if Environment == "development" {
 		// in development, serve local assets
