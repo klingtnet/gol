@@ -8,14 +8,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/microcosm-cc/bluemonday"
-	"github.com/russross/blackfriday"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"sort"
 	"time"
+
+	"./templates"
 )
 
 type Post struct {
@@ -132,27 +131,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sanitizePolicy := bluemonday.UGCPolicy()
-	sanitizePolicy.AllowElements("iframe", "audio", "video")
-	sanitizePolicy.AllowAttrs("width", "height", "src").OnElements("iframe", "audio", "video", "img")
-	templateUtils := template.FuncMap{
-		"markdown": func(content string) template.HTML {
-			htmlContent := blackfriday.MarkdownCommon([]byte(content))
-			htmlContent = sanitizePolicy.SanitizeBytes(htmlContent)
-			return template.HTML(htmlContent)
-		},
-		"formatTime": func(t time.Time) template.HTML {
-			// thanks, http://fuckinggodateformat.com/ (every language/template thingy should have this)
-			isoDate := t.Format(time.RFC3339)
-			readableDate := t.Format("January 2, 2006 (15:04)")
-			return template.HTML(fmt.Sprintf("<time datetime=\"%s\">%s</time>", isoDate, readableDate))
-		},
-		"assetUrl": func(path string) string {
-			return fmt.Sprintf("%s/%s", assetBase, path)
-		},
-	}
-	homePageTemplate := template.New("homepage").Funcs(templateUtils)
-	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
+	templates := templates.Templates(assetBase)
 
 	router := mux.NewRouter()
 
@@ -165,14 +144,11 @@ func main() {
 		m := make(map[string]interface{})
 		m["title"] = "gol"
 		m["posts"] = Reverse(ByDate(posts))
-		homePageTemplate.Execute(w, m)
+		templates.ExecuteTemplate(w, "posts", m)
 	})
 
-	createPostTemplate := template.New("create").Funcs(templateUtils)
-	createPostTemplate = template.Must(createPostTemplate.Parse(createPostTemplateStr))
-
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
-		createPostTemplate.Execute(w, map[string]string{"title": "Write a new post!"})
+		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
@@ -249,7 +225,7 @@ func main() {
 			m := make(map[string]interface{})
 			m["title"] = "Edit post"
 			m["post"] = post
-			createPostTemplate.Execute(w, m)
+			templates.ExecuteTemplate(w, "post_form", m)
 		} else {
 			http.NotFound(w, r)
 		}
@@ -267,86 +243,3 @@ func main() {
 	fmt.Println("Listening on http://0.0.0.0:5000")
 	log.Fatal(http.ListenAndServe(":5000", nil))
 }
-
-var homePageTemplateStr = `<!DOCTYPE html>
-<html lang=en>
-	<head>
-		<title>{{ .title }}</title>
-
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
-
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/tomorrow.min.css">
-
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-		<link rel="stylesheet" href="{{ "main.css" | assetUrl }}" />
-	</head>
-
-	<body>
-		<div class="container">
-			<div id="edit-button" class="fixed-action-btn">
-				<a href="/posts/new" class="btn-floating btn-large waves-effect waves-light blue tooltipped" data-tooltip="Write a new post"><i class="mdi-content-add"></i></a>
-			</div>
-
-			{{ range $post := .posts }}
-			<article id="post-{{ $post.Id }}" class="post">
-				<div class="post-actions">
-					<a href="/posts/{{ $post.Id }}/edit" class="btn-floating waves-effect waves-light blue tooltipped" data-tooltip="Edit post"><i class="mdi-editor-mode-edit"></i></a>
-					<a href="/posts/{{ $post.Id }}" data-method="DELETE" class="btn-floating waves-effect waves-light red tooltipped" data-tooltip="Delete post"><i class="mdi-action-delete"></i></a>
-				</div>
-				<h1><a href="/posts/{{ $post.Id }}">{{ $post.Title }}</a></h1>
-				<h5>Posted on <i>{{ $post.Created | formatTime }}</i></h5>
-
-				<div class="post-content flow-text">
-					{{ $post.Content | markdown }}
-				</div>
-			</article>
-			<hr />
-			{{ end }}
-		</div>
-
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script src="https://cdn.rawgit.com/heyLu/materialize.css/master/dist/js/materialize.min.js"></script>
-
-		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-		<script>hljs.initHighlightingOnLoad();</script>
-
-		<script src="{{ "main.js" | assetUrl }}"></script>
-	</body>
-</html>`
-
-var createPostTemplateStr = `<!DOCTYPE html>
-<html lang=en>
-	<head>
-		<title>{{ .title }}</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-		<link rel="stylesheet" href="{{ "main.css" | assetUrl }}" />
-	</head>
-
-	<body>
-		<div class="container">
-			<h1>{{ .title }}</h1>
-
-			<form method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}">
-				<div class="input-field">
-					<input class="markdown-input" name="title" type="text" value="{{ .post.Title }}"></input>
-					<label for="title">Titlemania</label>
-				</div>
-				<div class="input-field">
-					<textarea class="materialize-textarea markdown-input" name="content" rows="80" cols="100">{{ .post.Content }}</textarea>
-					<label for="content">Your thoughts.</label>
-				</div>
-
-
-				<button class="btn waves-effect waves-light" type="submit" name="action">
-					Submit
-				</button>
-			</form>
-		</div>
-
-		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script src="https://cdn.rawgit.com/heyLu/materialize.css/master/dist/js/materialize.min.js"></script>
-
-		<script src="{{ "main.js" | assetUrl }}"></script>
-	</body>
-</html>`
