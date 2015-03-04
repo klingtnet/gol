@@ -76,5 +76,11 @@
 		"title": "Tadum!",
 		"content": "Hello again... (with time???)",
 		"created": "2015-03-03T13:36:01.265284209+01:00"
+	},
+	{
+		"id": "2e17c142291319144a7951d0c8dfce08",
+		"title": "More crazy ideas",
+		"content": "- a public feed\r\n- groups\r\n- ...",
+		"created": "2015-03-04T17:55:10.586950061+01:00"
 	}
 ]
