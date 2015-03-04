@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/russross/blackfriday"
+	"github.com/microcosm-cc/bluemonday"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -134,6 +135,7 @@ func main() {
 	templateUtils := template.FuncMap{
 		"markdown": func(content string) template.HTML {
 			htmlContent := blackfriday.MarkdownCommon([]byte(content))
+			htmlContent = bluemonday.UGCPolicy().SanitizeBytes(htmlContent)
 			return template.HTML(htmlContent)
 		},
 		"formatTime": func(t time.Time) template.HTML {
