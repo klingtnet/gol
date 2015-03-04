@@ -132,10 +132,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	sanitizePolicy := bluemonday.UGCPolicy()
+	sanitizePolicy.AllowElements("iframe", "audio", "video")
+	sanitizePolicy.AllowAttrs("width", "height", "src").OnElements("iframe", "audio", "video")
 	templateUtils := template.FuncMap{
 		"markdown": func(content string) template.HTML {
 			htmlContent := blackfriday.MarkdownCommon([]byte(content))
-			htmlContent = bluemonday.UGCPolicy().SanitizeBytes(htmlContent)
+			htmlContent = sanitizePolicy.SanitizeBytes(htmlContent)
 			return template.HTML(htmlContent)
 		},
 		"formatTime": func(t time.Time) template.HTML {
