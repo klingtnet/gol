@@ -20,12 +20,16 @@
  */
 
 .post .post-actions {
-	visibility: hidden;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: .5s;
+    transition-timing-function: ease;
+    transition-delay: 0;
 	float: right;
 }
 
 .post:hover .post-actions {
-	visibility: visible;
+	opacity: 1;
 }
 
 .post .post-content {
