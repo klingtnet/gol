@@ -1,5 +1,11 @@
 [
 	{
+		"id": "8d182373c04316b42a433bb63be69014",
+		"title": "Sanity check",
+		"content": "## *Aka* let's see what we can do here...\r\n\r\nWe allow inline elements, like \u003ca href=\"/\"\u003ethis \u003cem\u003eshiny\u003c/em\u003e link\u003c/a\u003e, which even has an `em` element in it.\r\n\r\nWe also allow embedding images, at least I hope so, because we **need** kittens!\r\n\r\n\u003cimg src=\"http://www.helpinganimals.org/wp-content/uploads/2014/09/kitten_19023.jpg\" width=\"600px\" /\u003e\r\n\r\nWe also allow `iframe`s, even though we probably should restrict them to youtube and vimeo.\r\n\r\n\u003ciframe width=\"600\" height=\"400\" src=\"https://www.youtube.com/embed/598IdFlOXcQ\" frameborder=\"0\" allowfullscreen\u003e\u003c/iframe\u003e",
+		"created": "2015-03-04T14:03:45.384663865+01:00"
+	},
+	{
 		"id": "558371d54ced7614a8df578ae654de05",
 		"title": "Extract templates from main.go",
 		"content": "- in a seperate package `templates`\r\n- each template goes into a separate file, e.g. `templates/post_new.go`\r\n\r\n\r\n    ```go\r\n    // templates/post_new.go\r\n    package templates\r\n    \r\n    import (...)\r\n    \r\n    var postNewTemplate = `\r\n    YAY!\r\n    `\r\n    ```\r\n\r\n- we collect *all* templates in `templates/main.go`, which exports **one** variable with templates\r\n\r\n\r\n    ```go\r\n    // templates/main.go\r\n    package templates\r\n    \r\n    import (...)\r\n    \r\n    var templateFuncs = template.FuncMap{}\r\n    \r\n    var Template = template.New(\"\").Funcs(templateFuncs)\r\n\r\n    Template.New(\"post.new\").Parse(newPostTemplate)\r\n    ```",
