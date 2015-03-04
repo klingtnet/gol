@@ -142,8 +142,7 @@ func main() {
 			posts = append(posts, post)
 			writePosts("posts.json", posts)
 
-			w.Header().Set("Location", "/")
-			w.WriteHeader(http.StatusSeeOther)
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else { // TODO: GET list all posts
 			w.WriteHeader(http.StatusNotImplemented)
 			w.Write([]byte("not implemented"))
@@ -172,8 +171,8 @@ func main() {
 			if r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
 				newPost.Title = r.FormValue("title")
 				newPost.Content = r.FormValue("content")
-				w.Header().Set("Location", "/")
-				w.WriteHeader(http.StatusSeeOther)
+
+				http.Redirect(w, r, "/", http.StatusSeeOther)
 			} else { // assume it's JSON
 				err := json.NewDecoder(r.Body).Decode(&newPost)
 				if err != nil {
