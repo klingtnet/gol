@@ -12,3 +12,6 @@ release: ${SOURCES}
 
 run: build
 	./main
+
+watch:
+	@gin --appPort 5000 --immediate --bin main run
