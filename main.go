@@ -289,7 +289,7 @@ var createPostTemplateStr = `<!DOCTYPE html>
 		<div class="container">
 			<h1>{{ .title }}</h1>
 
-			<form method="POST" action="/posts{{ if .post.Id }}/{{ .post.Id }}{{ end }}">
+			<form method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}">
 				<div class="input-field">
 					<input name="title" type="text" value="{{ .post.Title }}"></input>
 					<label for="title">Titlemania</label>
