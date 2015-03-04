@@ -171,21 +171,17 @@ func main() {
 	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
 		post := findPost(posts, id)
+		if post == nil {
+			http.NotFound(w, r)
+		}
+
 		if r.Method == "GET" {
 			if post != nil {
 				json.NewEncoder(w).Encode(post)
-			} else {
-				http.NotFound(w, r)
 			}
 		} else if r.Method == "HEAD" {
-			if post == nil {
-				http.NotFound(w, r)
-			}
+			// already handle by post == nil above
 		} else if r.Method == "POST" {
-			if post == nil {
-				http.NotFound(w, r)
-			}
-
 			var newPost Post
 			if r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
 				newPost.Title = r.FormValue("title")
