@@ -150,6 +150,12 @@ func main() {
 	postsRouter := router.PathPrefix("/posts").Subrouter()
 
 	postsRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		posts, _ := readPosts("posts.json")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(posts)
+	}).Methods("GET").Headers("Content-Type", "application/json")
+
+	postsRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := Post{
