@@ -149,10 +149,6 @@ func main() {
 
 	postsRouter := router.PathPrefix("/posts").Subrouter()
 
-	postsRouter.HandleFunc("/new", func(w http.ResponseWriter, r *http.Request) {
-		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
-	})
-
 	postsRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
@@ -170,6 +166,10 @@ func main() {
 		} else { // TODO: GET list all posts
 			notImplemented(w)
 		}
+	})
+
+	postsRouter.HandleFunc("/new", func(w http.ResponseWriter, r *http.Request) {
+		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
 	})
 
 	postsRouter.HandleFunc("/{id}", func(w http.ResponseWriter, r *http.Request) {
