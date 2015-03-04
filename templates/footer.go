@@ -9,6 +9,16 @@ var footerTemplate = `
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
 
+        <script type="text/javascript"
+          src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+          MathJax.Hub.Config({
+                tex2jax: {
+                        inlineMath: [['$','$'], ['\\(','\\)']],
+                            processEscapes: true
+                              }
+          });
+        </script>
+
 		<script src="{{ "main.js" | assetUrl }}"></script>
 	</body>
 </html>`

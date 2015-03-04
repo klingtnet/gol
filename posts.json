@@ -1,5 +1,11 @@
 [
 	{
+		"id": "591535c0630cf20e86cc2b5898283fbd",
+		"title": "Get some math!",
+		"content": "A little bit of [wavelet](http://en.wikipedia.org/wiki/Wavelet) transformation:\r\n\r\n\u003cp\u003e$x_a(t)=\\int_\\mathbb{R} WT_\\psi\\{x\\}(a,b)\\cdot\\psi_{a,b}(t)\\,db$\u003c/p\u003e\r\n\r\n- because `_` are interpreted like `*` in markdown, you have to surround your math expressions with html tags, i.e. `\u003cp\u003e` or `\u003cspan\u003e`\r\n",
+		"created": "2015-03-04T16:40:30.878546539+01:00"
+	},
+	{
 		"id": "be49d7851372d54993af097ecc3be40a",
 		"title": "Pluggable storage backends",
 		"content": "We want to support multiple storage backends, at least `json` (continuing to support the current data), `sqlite` (or `sql` in general, as the driver is general anyway?). and maybe we can even support `datomic`, which would make Lucas very happy!\r\n\r\n## What do we need?\r\n\r\n- store posts (create, update, delete, list)\r\n- store users (or at least it should be clear how to add support for users)\r\n\r\nOptional/fun:\r\n\r\n- search/querying (by date, reversed, by title, by matching title, by content, ...)\r\n\r\n## How could the interface look like?\r\n\r\n```go\r\n// storage_json is the package with the json backend\r\nstorage := storage_json.Open(\"posts.json\")\r\n\r\n// finding and updating posts\r\ntheAnswer, err := storage.FindPostById(\"42\")\r\ntheAnswer.Content = \"42\"\r\n\r\nerr = storage.Save(theAnswer)\r\n\r\n// creating posts\r\nnewPost := Post{/* ... */}\r\nerr = storage.Save(newPost) // maybe .Create?\r\n\r\n// maybe?\r\nstorage.Reload() // == storage_json.Open(\"...\") ??\r\n```\r\n\r\n## Questions\r\n\r\n- how do we \"coordinate\" ids for new posts?\r\n    \r\n    i.e. should storing a post generate the post id or should we do it ourselves?\r\n\r\n    i think we should generate it, could there be problems with that? (it seems a bit more \"go style\" to do it ourselves, because the storage backend should just store, not generate things. but i'm still not entirely sure.)\r\n- with the above design, adding users would result in new methods...",
