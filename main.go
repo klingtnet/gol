@@ -57,7 +57,7 @@ func readPosts(filename string) ([]Post, error) {
 }
 
 func writePosts(filename string, posts []Post) error {
-	postsJson, err := json.Marshal(posts)
+	postsJson, err := json.MarshalIndent(posts, "", "\t")
 	if err != nil {
 		return err
 	}
