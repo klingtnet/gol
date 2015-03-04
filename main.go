@@ -88,6 +88,18 @@ func toByteSlice(data interface{}) []byte {
 	return buf.Bytes()
 }
 
+var environment = "development"
+var version = "master"
+var assetBase = "/assets"
+
+func init() {
+	if environment == "production" {
+		assetBase = fmt.Sprintf("https://cdn.rawgit.com/KLINGTdotNET/gol/%s/assets", version)
+	}
+
+	fmt.Printf("gol - v%s (%s)\n", version, environment)
+}
+
 func main() {
 	posts, err := readPosts("posts.json")
 	if err != nil {
@@ -207,6 +219,11 @@ func main() {
 
 	// http.HandleFunc("/posts", ...) // GET = display all posts
 	// http:HandleFunc("/posts/:id", ...) // GET/POST = get/edit an existing post
+
+	if environment == "development" {
+		// in development, serve local assets
+		router.PathPrefix("/assets").Handler(http.StripPrefix("/assets", http.FileServer(http.Dir("assets"))))
+	}
 
 	http.Handle("/", router)
 
