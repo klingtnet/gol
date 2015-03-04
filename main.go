@@ -88,6 +88,11 @@ func toByteSlice(data interface{}) []byte {
 	return buf.Bytes()
 }
 
+func notImplemented(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNotImplemented)
+	w.Write([]byte("not implemented"))
+}
+
 var Environment = "development"
 var Version = "master"
 var assetBase = "/assets"
@@ -156,8 +161,7 @@ func main() {
 
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else { // TODO: GET list all posts
-			w.WriteHeader(http.StatusNotImplemented)
-			w.Write([]byte("not implemented"))
+			notImplemented(w)
 		}
 	})
 
@@ -201,6 +205,8 @@ func main() {
 			}
 			writePosts("posts.json", posts)
 			json.NewEncoder(w).Encode(post)
+		} else {
+			notImplemented(w)
 		}
 	})
 
