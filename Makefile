@@ -9,3 +9,6 @@ build: ${SOURCES}
 
 release: ${SOURCES}
 	go build -ldflags "-X main.Environment \"production\" -X main.Version \"${VERSION}\"" main.go
+
+run: build
+	./main
