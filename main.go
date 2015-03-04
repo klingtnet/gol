@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/russross/blackfriday"
@@ -76,6 +77,25 @@ func findPost(posts []Post, id string) *Post {
 	}
 
 	return nil
+}
+
+func deletePost(posts []Post, id string) ([]Post, error) {
+	newPosts := make([]Post, 0, len(posts))
+	foundPost := false
+
+	for _, post := range posts {
+		if post.Id != id {
+			newPosts = append(newPosts, post)
+		} else {
+			foundPost = true
+		}
+	}
+
+	if !foundPost {
+		return posts, errors.New("post not found")
+	}
+
+	return newPosts, nil
 }
 
 func toByteSlice(data interface{}) []byte {
@@ -205,6 +225,12 @@ func main() {
 			}
 			writePosts("posts.json", posts)
 			json.NewEncoder(w).Encode(post)
+		} else if r.Method == "DELETE" {
+			posts, err = deletePost(posts, id)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusNotFound)
+			}
+			writePosts("posts.json", posts)
 		} else {
 			notImplemented(w)
 		}
