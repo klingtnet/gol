@@ -281,7 +281,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 			<article id="post-{{ $post.Id }}" class="post">
 				<div class="post-actions">
 					<a href="/posts/{{ $post.Id }}/edit" class="btn-floating waves-effect waves-light blue"><i class="mdi-editor-mode-edit"></i></a>
-					<a href="/posts/{{ $post.Id }}/delete" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
+					<a href="/posts/{{ $post.Id }}" data-method="DELETE" class="btn-floating waves-effect waves-light red"><i class="mdi-action-delete"></i></a>
 				</div>
 				<h1><a href="/posts/{{ $post.Id }}">{{ $post.Title }}</a></h1>
 				<h5>Posted on <i>{{ $post.Created | formatTime }}</i></h5>
@@ -299,6 +299,8 @@ var homePageTemplateStr = `<!DOCTYPE html>
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
+
+		<script src="{{ "main.js" | assetUrl }}"></script>
 	</body>
 </html>`
 
