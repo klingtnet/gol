@@ -39,3 +39,7 @@
     /* materialize would override the font-size /wo !important  */
     font-size: 1.25em !important;
 }
+
+.post img {
+    max-width: 100%;
+}
