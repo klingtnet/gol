@@ -134,7 +134,7 @@ func main() {
 
 	sanitizePolicy := bluemonday.UGCPolicy()
 	sanitizePolicy.AllowElements("iframe", "audio", "video")
-	sanitizePolicy.AllowAttrs("width", "height", "src").OnElements("iframe", "audio", "video")
+	sanitizePolicy.AllowAttrs("width", "height", "src").OnElements("iframe", "audio", "video", "img")
 	templateUtils := template.FuncMap{
 		"markdown": func(content string) template.HTML {
 			htmlContent := blackfriday.MarkdownCommon([]byte(content))
