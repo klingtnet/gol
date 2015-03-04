@@ -17,6 +17,7 @@ var postFormTemplate = `
 
 
 				<button class="btn waves-effect waves-light" type="submit" name="action">
+					<i class="mdi-action-done left"></i>
 					Submit
 				</button>
 			</form>
