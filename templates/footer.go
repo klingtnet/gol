@@ -11,12 +11,6 @@ var footerTemplate = `
 
         <script type="text/javascript"
           src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-          MathJax.Hub.Config({
-                tex2jax: {
-                        inlineMath: [['$','$'], ['\\(','\\)']],
-                            processEscapes: true
-                              }
-          });
         </script>
 
 		<script src="{{ "main.js" | assetUrl }}"></script>
