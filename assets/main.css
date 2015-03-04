@@ -39,11 +39,15 @@
 
 .post ul li {
 	margin-left: 1em;
-	list-style: inside none disc;
+	list-style-type: disc;
 }
 
 .post img {
     max-width: 100%;
+}
+
+.post code {
+    font-family: "Source Code Pro", "Droid Sans Mono", monospace;
 }
 
 /*
