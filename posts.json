@@ -2,7 +2,7 @@
 	{
 		"id": "591535c0630cf20e86cc2b5898283fbd",
 		"title": "Get some math!",
-		"content": "A little bit of [wavelet](http://en.wikipedia.org/wiki/Wavelet) transformation:\r\n\r\n\u003cp\u003e$x_a(t)=\\int_\\mathbb{R} WT_\\psi\\{x\\}(a,b)\\cdot\\psi_{a,b}(t)\\,db$\u003c/p\u003e\r\n\r\n- because `_` are interpreted like `*` in markdown, you have to surround your math expressions with html tags, i.e. `\u003cp\u003e` or `\u003cspan\u003e`\r\n",
+		"content": "A little bit of [wavelet](http://en.wikipedia.org/wiki/Wavelet) transformation:\r\n\r\n\u003cp\u003e$$x_a(t)=\\int_\\mathbb{R} WT_\\psi\\{x\\}(a,b)\\cdot\\psi_{a,b}(t)\\,db$$\u003c/p\u003e\r\n\r\n- because `_` are interpreted like `*` in markdown, you have to surround your math expressions with html tags, i.e. `\u003cp\u003e` or `\u003cspan\u003e`\r\n",
 		"created": "2015-03-04T16:40:30.878546539+01:00"
 	},
 	{
