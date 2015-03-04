@@ -33,7 +33,11 @@
 	line-height: 1.8rem;
 }
 
-.post li > p {
+.post ul {
+    padding-left: 1em;
+}
+
+.post ul li > p {
 	display: inline-block;
 }
 
