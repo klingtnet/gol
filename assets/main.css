@@ -1,0 +1,17 @@
+#edit-button {
+	top: 23px;
+}
+
+.post .post-actions {
+	visibility: hidden;
+	float: right;
+}
+
+.post:hover .post-actions {
+	visibility: visible;
+}
+
+.post .post-content {
+	font-size: 1.414rem;
+	line-height: 1.8rem;
+}

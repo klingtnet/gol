@@ -163,7 +163,8 @@ func main() {
 		homePageTemplate.Execute(w, m)
 	})
 
-	createPostTemplate := template.Must(template.New("create").Parse(createPostTemplateStr))
+	createPostTemplate := template.New("create").Funcs(templateUtils)
+	createPostTemplate = template.Must(createPostTemplate.Parse(createPostTemplateStr))
 
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
 		createPostTemplate.Execute(w, map[string]string{"title": "Write a new post!"})
@@ -273,25 +274,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/tomorrow.min.css">
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-		<style>
-			#edit-button {
-				top: 23px;
-			}
-
-			.post .post-actions {
-				visibility: hidden;
-				float: right;
-			}
-
-			.post:hover .post-actions {
-				visibility: visible;
-			}
-
-			.post .post-content {
-				font-size: 1.414rem;
-				line-height: 1.8rem;
-			}
-		</style>
+		<link rel="stylesheet" href="{{ "main.css" | assetUrl }}" />
 	</head>
 
 	<body>
@@ -333,6 +316,7 @@ var createPostTemplateStr = `<!DOCTYPE html>
 		<title>{{ .title }}</title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<link rel="stylesheet" href="{{ "main.css" | assetUrl }}" />
 	</head>
 
 	<body>
