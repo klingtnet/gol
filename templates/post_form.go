@@ -20,6 +20,10 @@ var postFormTemplate = `
 					<i class="mdi-action-done left"></i>
 					Submit
 				</button>
+				<a href="/" class="btn waves-effect waves-light red" type="submit" name="action">
+					<i class="mdi-navigation-close left"></i>
+					Cancel
+				</a>
 			</form>
 
 {{template "footer" . }}`
