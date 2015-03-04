@@ -122,6 +122,9 @@ func main() {
 			readableDate := t.Format("January 2, 2006 (15:04)")
 			return template.HTML(fmt.Sprintf("<time datetime=\"%s\">%s</time>", isoDate, readableDate))
 		},
+		"assetUrl": func(path string) string {
+			return fmt.Sprintf("%s/%s", assetBase, path)
+		},
 	}
 	homePageTemplate := template.New("homepage").Funcs(templateUtils)
 	homePageTemplate = template.Must(homePageTemplate.Parse(homePageTemplateStr))
