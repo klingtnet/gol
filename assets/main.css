@@ -1,3 +1,16 @@
+@font-face {
+    font-family: 'Droid Sans Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Droid Sans Mono'), local('DroidSansMono'), url(/assets/fonts/DroidSansMono.ttf) format('truetype');
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Source Code Pro'), local('SourceCodePro-Regular'), url(/assets/fonts/SourceCodePro-Regular.ttf) format('truetype');
+}
+
 #edit-button {
 	top: 23px;
 }
@@ -19,4 +32,10 @@
 .post ul li {
 	margin-left: 1em;
 	list-style: inside none disc;
+}
+
+.markdown-input {
+    font-family: "Source Code Pro", "Droid Sans Mono", monospace;
+    /* materialize would override the font-size /wo !important  */
+    font-size: 1.25em !important;
 }

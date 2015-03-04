@@ -8,8 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/russross/blackfriday"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -330,11 +330,11 @@ var createPostTemplateStr = `<!DOCTYPE html>
 
 			<form method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}">
 				<div class="input-field">
-					<input name="title" type="text" value="{{ .post.Title }}"></input>
+					<input class="markdown-input" name="title" type="text" value="{{ .post.Title }}"></input>
 					<label for="title">Titlemania</label>
 				</div>
 				<div class="input-field">
-					<textarea class="materialize-textarea" name="content" rows="50" cols="120">{{ .post.Content }}</textarea>
+					<textarea class="materialize-textarea markdown-input" name="content" rows="50" cols="120">{{ .post.Content }}</textarea>
 					<label for="content">Your thoughts.</label>
 				</div>
 
