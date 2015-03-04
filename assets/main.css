@@ -15,3 +15,8 @@
 	font-size: 1.414rem;
 	line-height: 1.8rem;
 }
+
+.post ul li {
+	margin-left: 1em;
+	list-style: inside none disc;
+}
