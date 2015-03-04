@@ -15,6 +15,10 @@
 	top: 23px;
 }
 
+/*
+ * post styles
+ */
+
 .post .post-actions {
 	visibility: hidden;
 	float: right;
@@ -34,12 +38,21 @@
 	list-style: inside none disc;
 }
 
+.post img {
+    max-width: 100%;
+}
+
+/*
+ * edit styles
+ */
+
 .markdown-input {
     font-family: "Source Code Pro", "Droid Sans Mono", monospace;
     /* materialize would override the font-size /wo !important  */
     font-size: 1.25em !important;
 }
 
-.post img {
-    max-width: 100%;
+.input-field textarea {
+	height: 50vh;
+	overflow-y: visible;
 }

@@ -305,7 +305,7 @@ var homePageTemplateStr = `<!DOCTYPE html>
 		</div>
 
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
+		<script src="https://cdn.rawgit.com/heyLu/materialize.css/master/dist/js/materialize.min.js"></script>
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
@@ -333,7 +333,7 @@ var createPostTemplateStr = `<!DOCTYPE html>
 					<label for="title">Titlemania</label>
 				</div>
 				<div class="input-field">
-					<textarea class="materialize-textarea markdown-input" name="content" rows="50" cols="120">{{ .post.Content }}</textarea>
+					<textarea class="materialize-textarea markdown-input" name="content" rows="80" cols="100">{{ .post.Content }}</textarea>
 					<label for="content">Your thoughts.</label>
 				</div>
 
@@ -345,7 +345,7 @@ var createPostTemplateStr = `<!DOCTYPE html>
 		</div>
 
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
+		<script src="https://cdn.rawgit.com/heyLu/materialize.css/master/dist/js/materialize.min.js"></script>
 
 		<script src="{{ "main.js" | assetUrl }}"></script>
 	</body>
