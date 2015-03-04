@@ -172,7 +172,8 @@ func main() {
 		id := mux.Vars(r)["id"]
 		post := findPost(posts, id)
 		if post == nil {
-			http.NotFound(w, r)
+			http.Error(w, "post not found", http.StatusNotFound)
+			return
 		}
 
 		if r.Method == "GET" {
