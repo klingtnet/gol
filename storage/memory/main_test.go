@@ -8,7 +8,7 @@ import (
 )
 
 func TestOpen(t *testing.T) {
-	backend := MemoryBackend{}
+	backend := Backend{}
 	u, _ := url.Parse("memory://")
 	store, _ := backend.Open(u)
 	if store == nil {
@@ -17,7 +17,7 @@ func TestOpen(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	store := &MemoryStore{}
+	store := &Store{}
 	err := store.Create(post.Post{Id: "test"})
 	if err != nil {
 		t.Error("could not create post")

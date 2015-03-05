@@ -9,21 +9,21 @@ import (
 )
 
 func init() {
-	storage.Register("memory", MemoryBackend{})
+	storage.Register("memory", Backend{})
 }
 
-type MemoryBackend struct{}
+type Backend struct{}
 
-func (m MemoryBackend) Open(url *url.URL) (storage.Store, error) {
-	store := storage.Store(&MemoryStore{})
+func (m Backend) Open(url *url.URL) (storage.Store, error) {
+	store := storage.Store(&Store{})
 	return store, nil
 }
 
-type MemoryStore struct{
+type Store struct{
 	posts []post.Post
 }
 
-func (s *MemoryStore) FindById(id string) (*post.Post, error) {
+func (s *Store) FindById(id string) (*post.Post, error) {
 	for i, post := range s.posts {
 		if post.Id == id {
 			return &s.posts[i], nil
@@ -33,16 +33,16 @@ func (s *MemoryStore) FindById(id string) (*post.Post, error) {
 	return nil, errors.New("post not found")
 }
 
-func (s *MemoryStore) FindAll() ([]post.Post, error) {
+func (s *Store) FindAll() ([]post.Post, error) {
 	return s.posts, nil
 }
 
-func (s *MemoryStore) Create(post post.Post) error {
+func (s *Store) Create(post post.Post) error {
 	s.posts = append(s.posts, post)
 	return nil
 }
 
-func (s *MemoryStore) Update(updatedPost post.Post) error {
+func (s *Store) Update(updatedPost post.Post) error {
 	oldPost, err := s.FindById(updatedPost.Id)
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (s *MemoryStore) Update(updatedPost post.Post) error {
 	return nil
 }
 
-func (s *MemoryStore) Delete(id string) error {
+func (s *Store) Delete(id string) error {
 	newPosts := make([]post.Post, 0, len(s.posts))
 	foundPost := false
 
