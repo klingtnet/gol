@@ -1,7 +1,7 @@
 all: build
 
 VERSION ?= $(shell git describe --always --tags --long)
-
+PORT ?= 5000
 SOURCES = $(shell find . -type f -name '*.go')
 
 build: ${SOURCES}
