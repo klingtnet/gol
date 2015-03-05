@@ -4,13 +4,16 @@ Pronounced "goal" (/ɡoʊl/).
 
 ## installation
 
-```
-$ cd gol
-$ go get -d .
-$ go build main.go
+```sh
+$ make
 $ ./main
 Listening on http://0.0.0.0:5000
 ```
+
+### as docker container
+
+- build the container `docker build -t gol .`
+- run the container `docker run -p 5000:5000 gol`
 
 ## dependencies
 
