@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+
+	"../post"
 )
 
 var registeredBackends = map[string]Backend{}
@@ -35,12 +37,12 @@ type Backend interface {
 }
 
 type Store interface {
-	// FindById(id string) (*Post, error)
-	// FindAll() ([]Post, error)
+	 FindById(id string) (*post.Post, error)
+	 FindAll() ([]post.Post, error)
 
-	// Create(post Post) error
-	// Update(post Post) error
-	// Delete(post Post) error
+	 Create(post post.Post) error
+	 Update(post post.Post) error
+	 Delete(id string) error
 
 	// Close() may or may not sync
 
