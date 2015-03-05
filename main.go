@@ -17,6 +17,7 @@ import (
 	"./post"
 	"./storage"
 	_ "./storage/memory"
+	_ "./storage/json"
 	"./templates"
 )
 
@@ -59,7 +60,10 @@ func init() {
 func main() {
 	flag.Parse()
 
-	store, _ := storage.Open("memory://")
+	store, err := storage.Open("json://posts.json")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	templates := templates.Templates(assetBase)
 
