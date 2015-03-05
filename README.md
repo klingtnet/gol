@@ -10,6 +10,15 @@ $ ./main
 Listening on http://0.0.0.0:5000
 ```
 
+If you want to use ssl, you can [generate a certificate](https://devcenter.heroku.com/articles/ssl-certificate-self#generate-private-key-and-certificate-signing-request)
+and then start the server using the `-ssl` flag, passing the certificate
+and the private key to it:
+
+```sh
+$ ./main -ssl server.crt,server.key
+Listening on https://0.0.0.0:5000
+```
+
 ### as docker container
 
 - build the container `docker build -t gol .`
