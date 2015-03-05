@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
@@ -13,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
 	"./templates"
@@ -125,6 +127,7 @@ func notImplemented(w http.ResponseWriter) {
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
+var ssl = flag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 
 func init() {
 	if Environment == "production" {
@@ -135,6 +138,8 @@ func init() {
 }
 
 func main() {
+	flag.Parse()
+
 	posts, err := readPosts("posts.json")
 	if err != nil {
 		log.Fatal(err)
@@ -257,5 +262,14 @@ func main() {
 
 	port := getEnv("PORT", "5000")
 	fmt.Printf("Listening on http://0.0.0.0:%s\n", port)
-	log.Fatal(http.ListenAndServe(":" + port, nil))
+	if *ssl == "" {
+		log.Fatal(http.ListenAndServe(":" + port, nil))
+	} else {
+		certAndKey := strings.Split(*ssl, ",")
+		if len(certAndKey) != 2 {
+			fmt.Println("Error: -ssl needs server.crt,server.key as arguments")
+			os.Exit(1)
+		}
+		log.Fatal(http.ListenAndServeTLS(":" + port, certAndKey[0], certAndKey[1], nil))
+	}
 }
