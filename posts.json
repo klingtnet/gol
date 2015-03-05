@@ -20,7 +20,7 @@
 	{
 		"id": "0d585f4331987cbdb001cf1cfae38ff1",
 		"title": "Tomorrow",
-		"content": "- pair on pluggable storage backends (json together, then Andreas sqlite and Lucas datomic)\r\n- escape cancels post editing (*with* confirmation)\r\n- listen on `$PORT`\r\n- support specifying a location for `posts.json` (for local deployment)\r\n- see [other ideas](/#post-f02d5a77c0f4a4953b856e5397df3d01)\r\n\r\n![unicorn](https://lilymichaud.files.wordpress.com/2007/09/unicorns_csg010.jpg)",
+		"content": "- ~~pair on pluggable storage backends (json together~~, then Andreas sqlite and Lucas datomic)\r\n- ~~escape cancels post editing (*with* confirmation)~~ doesn't work materialize modal + escape closes the modal immeditately, maybe later\r\n- ~~listen on `$PORT`~~\r\n- ~~support specifying a location for `posts.json` (for local deployment)~~\r\n- see [other ideas](/#post-f02d5a77c0f4a4953b856e5397df3d01)\r\n\r\n![unicorn](https://lilymichaud.files.wordpress.com/2007/09/unicorns_csg010.jpg)",
 		"created": "2015-03-04T17:50:24.03373836+01:00"
 	},
 	{
@@ -56,7 +56,7 @@
 	{
 		"id": "f02d5a77c0f4a4953b856e5397df3d01",
 		"title": "Next up",
-		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- pluggable storage backends\r\n- tests!\r\n- markdown preview (either live or tabbed)\r\n- cancel new post/edit\r\n- mathjax support\r\n- css *blingbling* :)",
+		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- ~~pluggable storage backends~~\r\n- tests! (~~at least some~~; some more, please!)\r\n- markdown preview (either live or tabbed)\r\n- ~~cancel new post/edit~~\r\n- ~~mathjax support~~\r\n- ~~css *blingbling* :)~~",
 		"created": "2015-03-04T12:01:55.115207523+01:00"
 	},
 	{
