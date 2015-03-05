@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/url"
+	"os"
 
 	storage ".."
 	"../../post"
@@ -23,6 +24,16 @@ func init() {
 
 func (m Backend) Open(u *url.URL) (storage.Store, error) {
 	path := u.Host + u.Path
+
+	// initialize with empty array if no such file
+	_, err := os.Stat(path)
+	if err != nil {
+		err = ioutil.WriteFile(path, []byte("[]"), 0644)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	posts, err := readPosts(path)
 	if err != nil {
 		return nil, err
