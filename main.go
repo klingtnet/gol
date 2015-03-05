@@ -14,11 +14,11 @@ import (
 	"strings"
 	"time"
 
-	"./post"
-	"./storage"
-	_ "./storage/memory"
-	_ "./storage/json"
-	"./templates"
+	"github.com/KLINGTdotNET/gol/post"
+	"github.com/KLINGTdotNET/gol/storage"
+	_ "github.com/KLINGTdotNET/gol/storage/memory"
+	_ "github.com/KLINGTdotNET/gol/storage/json"
+	"github.com/KLINGTdotNET/gol/templates"
 )
 
 func toByteSlice(data interface{}) []byte {

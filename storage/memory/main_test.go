@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"testing"
 
-	"../../post"
+	"github.com/KLINGTdotNET/gol/post"
 )
 
 func TestOpen(t *testing.T) {

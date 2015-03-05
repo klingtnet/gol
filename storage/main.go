@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/url"
 
-	"../post"
+	"github.com/KLINGTdotNET/gol/post"
 )
 
 var registeredBackends = map[string]Backend{}
