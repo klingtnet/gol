@@ -17,6 +17,8 @@ import (
 	"strings"
 	"time"
 
+	"./storage"
+	_ "./storage/memory"
 	"./templates"
 )
 
@@ -139,6 +141,9 @@ func init() {
 
 func main() {
 	flag.Parse()
+
+	store, _ := storage.Open("memory://")
+	fmt.Println(store)
 
 	posts, err := readPosts("posts.json")
 	if err != nil {
