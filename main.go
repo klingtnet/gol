@@ -261,8 +261,8 @@ func main() {
 	http.Handle("/", router)
 
 	port := getEnv("PORT", "5000")
-	fmt.Printf("Listening on http://0.0.0.0:%s\n", port)
 	if *ssl == "" {
+		fmt.Printf("Listening on http://0.0.0.0:%s\n", port)
 		log.Fatal(http.ListenAndServe(":" + port, nil))
 	} else {
 		certAndKey := strings.Split(*ssl, ",")
@@ -270,6 +270,7 @@ func main() {
 			fmt.Println("Error: -ssl needs server.crt,server.key as arguments")
 			os.Exit(1)
 		}
+		fmt.Printf("Listening on https://0.0.0.0:%s\n", port)
 		log.Fatal(http.ListenAndServeTLS(":" + port, certAndKey[0], certAndKey[1], nil))
 	}
 }
