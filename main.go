@@ -13,40 +13,17 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sort"
 	"strings"
 	"time"
 
+	"./post"
 	"./storage"
 	_ "./storage/memory"
 	"./templates"
 )
 
-type Post struct {
-	Id      string    `json:"id"`
-	Title   string    `json:"title"`
-	Content string    `json:"content"`
-	Created time.Time `json:"created"`
-}
-
-type ByDate []Post
-
-func (p ByDate) Len() int           { return len(p) }
-func (p ByDate) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p ByDate) Less(i, j int) bool { return p[i].Created.Unix() < p[j].Created.Unix() }
-
-func Sort(sortable sort.Interface) sort.Interface {
-	sort.Sort(sortable)
-	return sortable
-}
-
-func Reverse(sortable sort.Interface) sort.Interface {
-	sort.Sort(sort.Reverse(sortable))
-	return sortable
-}
-
-func readPosts(filename string) ([]Post, error) {
-	var posts []Post
+func readPosts(filename string) ([]post.Post, error) {
+	var posts []post.Post
 	postsJson, err := ioutil.ReadFile("posts.json")
 	if err != nil {
 		return nil, err
@@ -60,7 +37,7 @@ func readPosts(filename string) ([]Post, error) {
 	return posts, nil
 }
 
-func writePosts(filename string, posts []Post) error {
+func writePosts(filename string, posts []post.Post) error {
 	postsJson, err := json.MarshalIndent(posts, "", "\t")
 	if err != nil {
 		return err
@@ -74,7 +51,7 @@ func writePosts(filename string, posts []Post) error {
 	return nil
 }
 
-func findPost(posts []Post, id string) *Post {
+func findPost(posts []post.Post, id string) *post.Post {
 	for i, post := range posts {
 		if post.Id == id {
 			return &posts[i]
@@ -84,8 +61,8 @@ func findPost(posts []Post, id string) *Post {
 	return nil
 }
 
-func deletePost(posts []Post, id string) ([]Post, error) {
-	newPosts := make([]Post, 0, len(posts))
+func deletePost(posts []post.Post, id string) ([]post.Post, error) {
+	newPosts := make([]post.Post, 0, len(posts))
 	foundPost := false
 
 	for _, post := range posts {
@@ -162,7 +139,7 @@ func main() {
 		}
 		m := make(map[string]interface{})
 		m["title"] = "gol"
-		m["posts"] = Reverse(ByDate(posts))
+		m["posts"] = post.Reverse(post.ByDate(posts))
 		templates.ExecuteTemplate(w, "posts", m)
 	})
 
@@ -175,7 +152,7 @@ func main() {
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
-			post := Post{
+			post := post.Post{
 				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
 				Title:   r.FormValue("title"),
 				Content: r.FormValue("content"),
@@ -197,20 +174,20 @@ func main() {
 
 	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
-		post := findPost(posts, id)
-		if post == nil {
+		p := findPost(posts, id)
+		if p == nil {
 			http.Error(w, "post not found", http.StatusNotFound)
 			return
 		}
 
 		if r.Method == "GET" {
-			if post != nil {
-				json.NewEncoder(w).Encode(post)
+			if p != nil {
+				json.NewEncoder(w).Encode(p)
 			}
 		} else if r.Method == "HEAD" {
-			// already handle by post == nil above
+			// already handle by p == nil above
 		} else if r.Method == "POST" {
-			var newPost Post
+			var newPost post.Post
 			if r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
 				newPost.Title = r.FormValue("title")
 				newPost.Content = r.FormValue("content")
@@ -225,13 +202,13 @@ func main() {
 			}
 
 			if newPost.Title != "" {
-				post.Title = newPost.Title
+				p.Title = newPost.Title
 			}
 			if newPost.Content != "" {
-				post.Content = newPost.Content
+				p.Content = newPost.Content
 			}
 			writePosts("posts.json", posts)
-			json.NewEncoder(w).Encode(post)
+			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "DELETE" {
 			posts, err = deletePost(posts, id)
 			if err != nil {
