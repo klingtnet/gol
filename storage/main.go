@@ -35,4 +35,16 @@ type Backend interface {
 }
 
 type Store interface {
+	// FindById(id string) (*Post, error)
+	// FindAll() ([]Post, error)
+
+	// Create(post Post) error
+	// Update(post Post) error
+	// Delete(post Post) error
+
+	// Close() may or may not sync
+
+	// Sync write to disk *now*
 }
+
+// Reload = Close + Open
