@@ -48,6 +48,7 @@ var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
 var ssl = flag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
+var storageUrl = flag.String("storage", "json://posts.json", "the storage to connect to")
 
 func init() {
 	if Environment == "production" {
@@ -60,7 +61,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	store, err := storage.Open("json://posts.json")
+	store, err := storage.Open(*storageUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
