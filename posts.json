@@ -1,5 +1,11 @@
 [
 	{
+		"id": "ca804c7840bd1cbf10be86f129272f51",
+		"title": "Overnight ideas",
+		"content": "- post `types`\r\n\r\n    - add `type` field to `Post`\r\n    - example types: (image, video, media), quote, short, link)\r\n    - generate different html based on that, editing means editing the generated html (no additional \"types\" in db)\r\n\r\n    [![medium \"blog\" mockup](https://d262ilb51hltx0.cloudfront.net/max/800/1*-WhHEIYNclJIXl4qk0M9IA.png)](https://medium.com/inside/blogging-on-medium-95f1546bcd7d#b8de)\r\n- markdown cheatsheet (common syntax blurgh + link to full docs/examples, `shift-tab`)\r\n\r\n    \u003e Markdown works like this ...\r\n\r\n    \u003e Or edit the [example post](/post/hgkjdshgkjdsgdsgds)\r\n- quick posting (text field on index page for short posts, suggest \"full edit\" if too long)",
+		"created": "2015-03-05T09:53:54.32336066+01:00"
+	},
+	{
 		"id": "2e17c142291319144a7951d0c8dfce08",
 		"title": "More crazy ideas",
 		"content": "- a public feed\r\n- groups\r\n- make the title on the index page customizable (just \"gol\" sounds weird, maybe use the hostname if it's not localhost?)\r\n- ...",
