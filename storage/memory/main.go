@@ -8,19 +8,19 @@ import (
 	storage ".."
 )
 
+type Backend struct{}
+
+type Store struct{
+	posts []post.Post
+}
+
 func init() {
 	storage.Register("memory", Backend{})
 }
 
-type Backend struct{}
-
 func (m Backend) Open(url *url.URL) (storage.Store, error) {
 	store := storage.Store(&Store{})
 	return store, nil
-}
-
-type Store struct{
-	posts []post.Post
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
