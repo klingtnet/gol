@@ -6,7 +6,6 @@ ADD  . /opt/gol
 
 RUN  cd /opt/gol;\
      make;\
-     echo '[]' > posts.json;\
      chown -R gol:users .
 
 USER gol
