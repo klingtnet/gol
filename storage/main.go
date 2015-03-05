@@ -7,11 +7,11 @@ import (
 	"net/url"
 )
 
-var storageBackends = map[string]Storage{}
+var registeredBackends = map[string]Backend{}
 
-func Register(name string, storageImpl Storage) {
-	if _, alreadyExists := storageBackends[name]; !alreadyExists {
-		storageBackends[name] = storageImpl
+func Register(name string, backend Backend) {
+	if _, alreadyExists := registeredBackends[name]; !alreadyExists {
+		registeredBackends[name] = backend
 	} else {
 		log.Fatal("duplicate backend", name)
 	}
@@ -22,15 +22,15 @@ func Open(rawUrl string) (Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(storageBackends, u, u.Scheme)
-	if backend, ok := storageBackends[u.Scheme]; ok {
+	fmt.Println(registeredBackends, u, u.Scheme)
+	if backend, ok := registeredBackends[u.Scheme]; ok {
 		return backend.Open(u)
 	} else {
 		return nil, errors.New(fmt.Sprint("no such backend:", u.Scheme))
 	}
 }
 
-type Storage interface {
+type Backend interface {
 	Open(url *url.URL) (Store, error)
 }
 

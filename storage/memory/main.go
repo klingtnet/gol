@@ -7,12 +7,12 @@ import (
 )
 
 func init() {
-	storage.Register("memory", MemoryStorage{})
+	storage.Register("memory", MemoryBackend{})
 }
 
-type MemoryStorage struct{}
+type MemoryBackend struct{}
 
-func (m MemoryStorage) Open(url *url.URL) (storage.Store, error) {
+func (m MemoryBackend) Open(url *url.URL) (storage.Store, error) {
 	store := MemoryStore{}
 	return storage.Store(store), nil
 }
