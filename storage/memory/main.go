@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/url"
 
-	"../../post"
-	storage ".."
+	"github.com/KLINGTdotNET/gol/post"
+	"github.com/KLINGTdotNET/gol/storage"
 )
 
 type Backend struct{}

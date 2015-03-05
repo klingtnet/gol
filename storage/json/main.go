@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"os"
 
-	storage ".."
-	"../../post"
-	"../memory"
+	"github.com/KLINGTdotNET/gol/post"
+	"github.com/KLINGTdotNET/gol/storage"
+	"github.com/KLINGTdotNET/gol/storage/memory"
 )
 
 type Backend struct{}
