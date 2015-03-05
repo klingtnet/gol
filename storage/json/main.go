@@ -51,6 +51,7 @@ func readPosts(path string) ([]post.Post, error) {
 }
 
 func writePosts(path string, posts []post.Post) error {
+	post.Reverse(post.ByDate(posts))
 	postsJson, err := json.MarshalIndent(posts, "", "\t")
 	if err != nil {
 		return err
