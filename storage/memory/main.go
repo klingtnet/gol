@@ -23,6 +23,12 @@ func (m Backend) Open(url *url.URL) (storage.Store, error) {
 	return store, nil
 }
 
+func FromPosts(posts []post.Post) *Store {
+	return &Store{
+		posts: posts,
+	}
+}
+
 func (s *Store) FindById(id string) (*post.Post, error) {
 	for i, post := range s.posts {
 		if post.Id == id {
