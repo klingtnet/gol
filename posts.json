@@ -1,5 +1,11 @@
 [
 	{
+		"id": "a744e085d800e262c60414c26390f62c",
+		"title": "Hello pluggable backends!",
+		"content": "E.g. we're where we were this morning, but with *much* better architecture!",
+		"created": "2015-03-05T17:19:18.125457555+01:00"
+	},
+	{
 		"id": "ca804c7840bd1cbf10be86f129272f51",
 		"title": "Overnight ideas",
 		"content": "- post `types`\r\n\r\n    - add `type` field to `Post`\r\n    - example types: (image, video, media), quote, short, link)\r\n    - generate different html based on that, editing means editing the generated html (no additional \"types\" in db)\r\n\r\n    [![medium \"blog\" mockup](https://d262ilb51hltx0.cloudfront.net/max/800/1*-WhHEIYNclJIXl4qk0M9IA.png)](https://medium.com/inside/blogging-on-medium-95f1546bcd7d#b8de)\r\n- markdown cheatsheet (common syntax blurgh + link to full docs/examples, `shift-tab`)\r\n\r\n    \u003e Markdown works like this ...\r\n\r\n    \u003e Or edit the [example post](/post/hgkjdshgkjdsgdsgds)\r\n- quick posting (text field on index page for short posts, suggest \"full edit\" if too long)\r\n- rss feed",
@@ -14,7 +20,7 @@
 	{
 		"id": "0d585f4331987cbdb001cf1cfae38ff1",
 		"title": "Tomorrow",
-		"content": "- pair on pluggable storage backends (json together, then Andreas sqlite and Lucas datomic)\r\n- escape cancels post editing (*with* confirmation)\r\n- listen on `$PORT`\r\n- support specifying a location for `posts.json` (for local deployment)\r\n- see [other ideas](/#post-f02d5a77c0f4a4953b856e5397df3d01)\r\n\r\n![unicorn](https://lilymichaud.files.wordpress.com/2007/09/unicorns_csg010.jpg)",
+		"content": "- ~~pair on pluggable storage backends (json together~~, then Andreas sqlite and Lucas datomic)\r\n- ~~escape cancels post editing (*with* confirmation)~~ doesn't work materialize modal + escape closes the modal immeditately, maybe later\r\n- ~~listen on `$PORT`~~\r\n- ~~support specifying a location for `posts.json` (for local deployment)~~\r\n- see [other ideas](/#post-f02d5a77c0f4a4953b856e5397df3d01)\r\n\r\n![unicorn](https://lilymichaud.files.wordpress.com/2007/09/unicorns_csg010.jpg)",
 		"created": "2015-03-04T17:50:24.03373836+01:00"
 	},
 	{
@@ -50,7 +56,7 @@
 	{
 		"id": "f02d5a77c0f4a4953b856e5397df3d01",
 		"title": "Next up",
-		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- pluggable storage backends\r\n- tests!\r\n- markdown preview (either live or tabbed)\r\n- cancel new post/edit\r\n- mathjax support\r\n- css *blingbling* :)",
+		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- ~~pluggable storage backends~~\r\n- tests! (~~at least some~~; some more, please!)\r\n- markdown preview (either live or tabbed)\r\n- ~~cancel new post/edit~~\r\n- ~~mathjax support~~\r\n- ~~css *blingbling* :)~~",
 		"created": "2015-03-04T12:01:55.115207523+01:00"
 	},
 	{
