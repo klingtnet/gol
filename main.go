@@ -255,6 +255,7 @@ func main() {
 
 	http.Handle("/", router)
 
-	fmt.Println("Listening on http://0.0.0.0:5000")
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	port := getEnv("PORT", "5000")
+	fmt.Printf("Listening on http://0.0.0.0:%s\n", port)
+	log.Fatal(http.ListenAndServe(":" + port, nil))
 }
