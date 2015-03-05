@@ -72,7 +72,6 @@ func main() {
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		posts, err := store.FindAll()
-		fmt.Println(posts)
 		if err != nil {
 			log.Println("Warning: Could not read posts.json:", err)
 		}

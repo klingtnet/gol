@@ -24,7 +24,6 @@ func Open(rawUrl string) (Store, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(registeredBackends, u, u.Scheme)
 	if backend, ok := registeredBackends[u.Scheme]; ok {
 		return backend.Open(u)
 	} else {
