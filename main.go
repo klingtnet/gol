@@ -5,11 +5,9 @@ import (
 	"crypto/md5"
 	"encoding/binary"
 	"encoding/json"
-	"errors"
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -21,64 +19,6 @@ import (
 	_ "./storage/memory"
 	"./templates"
 )
-
-func readPosts(filename string) ([]post.Post, error) {
-	var posts []post.Post
-	postsJson, err := ioutil.ReadFile("posts.json")
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(postsJson, &posts)
-	if err != nil {
-		return nil, err
-	}
-
-	return posts, nil
-}
-
-func writePosts(filename string, posts []post.Post) error {
-	postsJson, err := json.MarshalIndent(posts, "", "\t")
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(filename, postsJson, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func findPost(posts []post.Post, id string) *post.Post {
-	for i, post := range posts {
-		if post.Id == id {
-			return &posts[i]
-		}
-	}
-
-	return nil
-}
-
-func deletePost(posts []post.Post, id string) ([]post.Post, error) {
-	newPosts := make([]post.Post, 0, len(posts))
-	foundPost := false
-
-	for _, post := range posts {
-		if post.Id != id {
-			newPosts = append(newPosts, post)
-		} else {
-			foundPost = true
-		}
-	}
-
-	if !foundPost {
-		return posts, errors.New("post not found")
-	}
-
-	return newPosts, nil
-}
 
 func toByteSlice(data interface{}) []byte {
 	buf := new(bytes.Buffer)
@@ -120,20 +60,14 @@ func main() {
 	flag.Parse()
 
 	store, _ := storage.Open("memory://")
-	fmt.Println(store)
-
-	posts, err := readPosts("posts.json")
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	templates := templates.Templates(assetBase)
 
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		var err error
-		posts, err = readPosts("posts.json")
+		posts, err := store.FindAll()
+		fmt.Println(posts)
 		if err != nil {
 			log.Println("Warning: Could not read posts.json:", err)
 		}
@@ -144,7 +78,7 @@ func main() {
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-		posts, _ := readPosts("posts.json")
+		posts, _ := store.FindAll()
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(posts)
 	}).Methods("GET").Headers("Content-Type", "application/json")
@@ -158,9 +92,12 @@ func main() {
 				Content: r.FormValue("content"),
 				Created: now,
 			}
-			posts, _ = readPosts("posts.json")
-			posts = append(posts, post)
-			writePosts("posts.json", posts)
+
+			err := store.Create(post)
+			if err != nil {
+				http.Error(w, err.Error(), 400)
+				return
+			}
 
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		} else { // TODO: GET list all posts
@@ -174,7 +111,7 @@ func main() {
 
 	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
-		p := findPost(posts, id)
+		p, _ := store.FindById(id)
 		if p == nil {
 			http.Error(w, "post not found", http.StatusNotFound)
 			return
@@ -207,14 +144,13 @@ func main() {
 			if newPost.Content != "" {
 				p.Content = newPost.Content
 			}
-			writePosts("posts.json", posts)
+			store.Update(*p)
 			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "DELETE" {
-			posts, err = deletePost(posts, id)
+			err := store.Delete(id)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusNotFound)
 			}
-			writePosts("posts.json", posts)
 		} else {
 			notImplemented(w)
 		}
@@ -222,7 +158,7 @@ func main() {
 
 	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
-		post := findPost(posts, id)
+		post, _ := store.FindById(id)
 		if post != nil {
 			m := make(map[string]interface{})
 			m["title"] = "Edit post"
