@@ -81,3 +81,7 @@
 #preview-tab {
     padding: 1em 0;
 }
+
+#preview-tab .post-actions {
+    display: none;
+}
