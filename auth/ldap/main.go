@@ -26,7 +26,7 @@ func init() {
 func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 	insecure := false
 	if u.Query().Get("insecure") == "true" {
-		log.Print("Warning: insecure ldap connection!")
+		log.Println("Warning: insecure ldap connection!")
 		insecure = true
 	}
 
