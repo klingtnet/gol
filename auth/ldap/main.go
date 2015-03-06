@@ -51,16 +51,21 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 
 func (a Auth) Login(username, password string) error {
 	var conn *ldap.Conn
-	var err error
+	var err *ldap.Error
 	if a.insecure {
 		tlsConfig := tls.Config{InsecureSkipVerify: true}
 		conn, err = ldap.DialSSLWithConfig("tcp", a.addr, &tlsConfig)
 	} else {
 		conn, err = ldap.DialSSL("tcp", a.addr)
 	}
-	if err != nil {
+	if err != nil && err.Err != nil {
 		return err
 	}
 
-	return conn.Bind(fmt.Sprintf(a.dnTemplate, username), password)
+	err = conn.Bind(fmt.Sprintf(a.dnTemplate, username), password)
+	if err != nil && err.Err != nil {
+		return err
+	}
+
+	return nil
 }
