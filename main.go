@@ -15,6 +15,9 @@ import (
 	"strings"
 	"time"
 
+	"./auth"
+	_ "./auth/insecure"
+	_ "./auth/ldap"
 	"./post"
 	"./storage"
 	_ "./storage/json"
@@ -63,6 +66,7 @@ var Version = "master"
 var assetBase = "/assets"
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
+var authUrl = pflag.String("authentication", "", "the authentication method to use")
 
 func init() {
 	if Environment == "production" {
@@ -79,6 +83,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	var authenticator *auth.Auth
+	if authUrl != nil && *authUrl != "" {
+		a, err := auth.Open(*authUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(a)
+		authenticator = &a
+	}
+	fmt.Println(authenticator)
 
 	templates := templates.Templates(assetBase)
 
