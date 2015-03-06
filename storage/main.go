@@ -36,12 +36,12 @@ type Backend interface {
 }
 
 type Store interface {
-	 FindById(id string) (*post.Post, error)
-	 FindAll() ([]post.Post, error)
+	FindById(id string) (*post.Post, error)
+	FindAll() ([]post.Post, error)
 
-	 Create(post post.Post) error
-	 Update(post post.Post) error
-	 Delete(id string) error
+	Create(post post.Post) error
+	Update(post post.Post) error
+	Delete(id string) error
 
 	// Close() may or may not sync
 
