@@ -69,6 +69,15 @@
 }
 
 .input-field textarea {
-	height: 50vh;
+	height: auto;
+	max-height: 37vh;
 	overflow-y: visible;
+}
+
+#edit-tab, #preview-tab {
+    min-height: 50vh;
+}
+
+#preview-tab {
+    padding: 1em 0;
 }

@@ -51,6 +51,28 @@
         }
     }
 
-    supportDeleteLinks();
+    // render the markdown preview
+    function renderPreview() {
+        var textarea = document.getElementById("edit-content");
+        var previewSelect = document.getElementById("preview-select");
+        var preview = document.getElementById("preview-tab");
+        if (previewSelect == null) { return; }
+
+        previewSelect.addEventListener("click", function(ev) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/markdown');
+            xhr.send(textarea.value);
+            xhr.onload = function(ev) {
+                if (xhr.status == 200) {
+                    preview.innerHTML = xhr.responseText;
+                } else {
+                    console.error(xhr);
+                }
+            };
+        });
+    }
+
     tabOverride();
+    supportDeleteLinks();
+    renderPreview();
 })();
