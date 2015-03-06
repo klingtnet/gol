@@ -1,5 +1,11 @@
 [
 	{
+		"id": "5c006f42cf92323afddba19d5cf5a619",
+		"title": "Changing the templates",
+		"content": "The templates are now in `templates/*.tmpl` and `templates/shared/*.tmpl`.\r\n\r\nAfter changing them, you need to restart the server to see your changes. If you don't want to do this, you can use [our fork of gin](https://github.com/heyLu/gin) (install with `go get -v github.com/heyLu/gin`) which has support for restarting when the templates change.\r\n\r\nThere's also a `make` target for this: run `make watch` to watch `.go` and `.tmpl` files and then start changing things!",
+		"created": "2015-03-06T11:01:52.161004308+01:00"
+	},
+	{
 		"id": "afba23f74deef888d8b5902bb91dcd19",
 		"title": "Ideas for tomorrow",
 		"content": "- LDAP\r\n- sqlite backend\r\n- markdown preview (tabbed)\r\n- render single posts (see above)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
