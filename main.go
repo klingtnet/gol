@@ -173,6 +173,7 @@ func main() {
 					http.Error(w, err.Error(), http.StatusBadRequest)
 				}
 				w.WriteHeader(http.StatusAccepted)
+				writeJson(w, newPost)
 			}
 
 			if newPost.Title != "" {

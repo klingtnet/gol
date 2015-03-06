@@ -5,6 +5,10 @@
         console.log.apply(console, arguments);
     }
 
+    function displayMessage(msg) {
+        console.log(msg);
+    }
+
     function displayError(msg) {
         console.error(msg);
         alert(msg);
@@ -109,6 +113,45 @@
         var fullscreenToggle = document.getElementById("fullscreen-toggle");
         fullscreenToggle.addEventListener("click", function(ev) {
             requestFullscreen(editContent.parentElement);
+            editContent.focus();
+        });
+    }
+
+    function savePost(success, error) {
+        var form = document.getElementById("edit-post");
+        var editTitle = document.getElementById("edit-title");
+        var editContent = document.getElementById("edit-content");
+
+        var post = {
+            "title": editTitle.value,
+            "content": editContent.value
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/posts/' + form.dataset.postId);
+        xhr.responseType = 'json'
+        xhr.onload = function(ev) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                 success(xhr);
+            } else {
+                error(xhr);
+            }
+        };
+        xhr.send(JSON.stringify(post));
+    }
+
+    // save post shortcut (without stopping to write it)
+    function savePostShortcut() {
+        var editContent = document.getElementById("edit-content");
+        if (editContent == null) { return; }
+
+        editContent.addEventListener("keydown", function(ev) {
+            if (ev.ctrlKey && ev.keyCode == 83) { // Ctrl-S
+                ev.preventDefault();
+                savePost(function() {
+                    displayMessage("post saved");
+                }, function(xhr) { console.error(xhr.status, xhr.statusText); });
+            }
         });
     }
 
@@ -117,4 +160,5 @@
     renderPreview();
     editorOnDoubleClick();
     setupFullscreenMode();
+    savePostShortcut();
 })();
