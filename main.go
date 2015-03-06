@@ -93,7 +93,10 @@ func main() {
 	}).Methods("GET").Headers("Content-Type", "application/json")
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" { // POST creates a new post
+		if r.Method == "GET" {
+			posts, _ := store.FindAll()
+			renderPosts(templates, w, posts)
+		} else if r.Method == "POST" { // POST creates a new post
 			now := time.Now()
 			post := post.Post{
 				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
@@ -109,7 +112,7 @@ func main() {
 			}
 
 			http.Redirect(w, r, "/", http.StatusSeeOther)
-		} else { // TODO: GET list all posts
+		} else {
 			notImplemented(w)
 		}
 	})
