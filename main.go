@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ogier/pflag"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -124,11 +123,13 @@ func main() {
 
 	router.HandleFunc("/posts/preview", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" { // use post to receive content in body
-			markdown, err := ioutil.ReadAll(r.Body)
+			var post post.Post
+			err := json.NewDecoder(r.Body).Decode(&post)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 			} else {
-				templates.ExecuteTemplate(w, "markdown", string(markdown))
+				post.Created = time.Now()
+				templates.ExecuteTemplate(w, "post", post)
 			}
 		} else {
 			notImplemented(w)
