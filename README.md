@@ -15,7 +15,7 @@ and then start the server using the `-ssl` flag, passing the certificate
 and the private key to it:
 
 ```sh
-$ ./main -ssl server.crt,server.key
+$ ./main --ssl server.crt,server.key
 Listening on https://0.0.0.0:5000
 ```
 
