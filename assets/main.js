@@ -91,8 +91,30 @@
         }
     }
 
+    function requestFullscreen(el) {
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        } else if (el.mozRequestFullScreen) {
+            el.mozRequestFullScreen()
+        } else if (el.webkitRequestFullScreen) {
+            el.webkitRequestFullScreen();
+        }
+    }
+
+    // fullscreen mode
+    function setupFullscreenMode() {
+        var editContent = document.getElementById("edit-content");
+        if (editContent == null) { return; }
+
+        var fullscreenToggle = document.getElementById("fullscreen-toggle");
+        fullscreenToggle.addEventListener("click", function(ev) {
+            requestFullscreen(editContent.parentElement);
+        });
+    }
+
     tabOverride();
     supportDeleteLinks();
     renderPreview();
     editorOnDoubleClick();
+    setupFullscreenMode();
 })();

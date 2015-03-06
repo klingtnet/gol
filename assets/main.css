@@ -72,6 +72,7 @@
 	height: auto;
 	max-height: 37vh;
 	overflow-y: visible;
+	background-color: white;
 }
 
 #edit-tab, #preview-tab {
@@ -84,4 +85,35 @@
 
 #preview-tab .post-actions {
     display: none;
+}
+
+/*
+ * fullscreen styles
+ */
+
+#fullscreen-toggle {
+	position: absolute;
+	top: -0.25em;
+	right: 10px;
+	font-size: 3em;
+	color: #999;
+}
+
+#fullscreen-toggle:hover {
+	color: #333;
+}
+
+.input-field:-moz-full-screen {
+	font-size: 1.1em !important;
+	background-color: white;
+}
+
+.input-field:-moz-full-screen #fullscreen-toggle {
+	visibility: hidden;
+}
+
+.input-field:-moz-full-screen #edit-content {
+	width: 80vw;
+	max-height: 100vh;
+	margin: 0 10%;
 }

@@ -1,3 +1,7 @@
+# next - (not yet released)
+
+- fullscreen editing mode
+
 # 0.2.0 - Now we're getting fancy...
 
 - markdown preview while editing posts
