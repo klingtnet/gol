@@ -25,13 +25,11 @@ func init() {
 }
 
 func setup(db *sql.DB) error {
+	// initialize sqlite database if not present under path
 	creatTableStmt := "CREATE TABLE IF NOT EXISTS posts (id TEXT NOT NULL PRIMARY KEY, created DATETIME, title TEXT, content TEXT)"
 	// db.Exec does not return results
 	_, err := db.Exec(creatTableStmt)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return nil
+	return err
 }
 
 func (m Backend) Open(u *url.URL) (storage.Store, error) {
@@ -41,8 +39,11 @@ func (m Backend) Open(u *url.URL) (storage.Store, error) {
 		return nil, err
 	}
 
-	// initialize sqlite database if not present under path
-	setup(db)
+	err = setup(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// return store
 	store := storage.Store(&Store{
 		db: db,
@@ -59,10 +60,9 @@ func (s *Store) FindById(id string) (*post.Post, error) {
 	// never returns nil
 	row := stmt.QueryRow(id)
 
-	// ugghhh
-	var id1, title, content string
+	var title, content string
 	var created time.Time
-	err = row.Scan(&id1, &created, &title, &content)
+	err = row.Scan(&id, &created, &title, &content)
 	post := &post.Post{id, title, content, created}
 
 	switch {
@@ -96,24 +96,7 @@ func (s *Store) FindAll() ([]post.Post, error) {
 }
 
 func (s *Store) Create(post post.Post) error {
-	query := "INSERT INTO posts(id, created, title, content) values(?, ?, ?, ?)"
-
-	tx, err := s.db.Begin()
-	if err != nil {
-		log.Print("could not begin transaction!")
-		return err
-	}
-	stmt, err := s.db.Prepare(query)
-	if err != nil {
-		log.Print("could not prepare statement!", err)
-		return err
-	}
-	_, err = stmt.Exec(post.Id, post.Created, post.Title, post.Content)
-	if err != nil {
-		log.Printf("could not execute statement!")
-		return err
-	}
-	return tx.Commit()
+	return s.execQuery("INSERT INTO posts(id, created, title, content) values(?, ?, ?, ?)", post.Id, post.Created, post.Title, post.Content)
 }
 
 func (s *Store) Update(updatedPost post.Post) error {
@@ -122,42 +105,11 @@ func (s *Store) Update(updatedPost post.Post) error {
 		return err
 	}
 
-	tx, err := s.db.Begin()
-	if err != nil {
-		return err
-	}
-
-	stmt, err := s.db.Prepare("UPDATE posts SET id=?, created=?, title=?, content=? WHERE id=?")
-	if err != nil {
-		log.Print(err)
-		return err
-	}
-
-	_, err = stmt.Exec(updatedPost.Id, updatedPost.Created, updatedPost.Title, updatedPost.Content, updatedPost.Id)
-	if err != nil {
-		return err
-	}
-
-	return tx.Commit()
+	return s.execQuery("UPDATE posts SET id=?, created=?, title=?, content=? WHERE id=?", updatedPost.Id, updatedPost.Created, updatedPost.Title, updatedPost.Content, updatedPost.Id)
 }
 
 func (s *Store) Delete(id string) error {
-	query := "DELETE FROM posts WHERE id = ?"
-
-	tx, err := s.db.Begin()
-	if err != nil {
-		return err
-	}
-	stmt, err := s.db.Prepare(query)
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec(id)
-	if err != nil {
-		return err
-	}
-
-	return tx.Commit()
+	return s.execQuery("DELETE FROM posts WHERE id = ?", id)
 }
 
 func (s *Store) Close() error {
@@ -167,4 +119,26 @@ func (s *Store) Close() error {
 func (s *Store) Sync() error {
 	// TODO
 	return nil
+}
+
+func (s *Store) execQuery(query string, args ...interface{}) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		log.Print("could not begin transaction", query)
+		return err
+	}
+
+	stmt, err := s.db.Prepare(query)
+	if err != nil {
+		log.Print("could not prepare query", query)
+		return err
+	}
+
+	_, err = stmt.Exec(args...)
+	if err != nil {
+		log.Print("could not execute statement", stmt)
+		return err
+	}
+
+	return tx.Commit()
 }
