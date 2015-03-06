@@ -136,13 +136,11 @@
             if (xhr.status >= 200 && xhr.status < 300) {
                 if (isNew) {
                     form.dataset.postId = xhr.response.id;
+
+                    // don't create the post again
+                    form.action = '/posts/' + xhr.response.id;
                 }
 
-                // don't create the post again
-                form.onsubmit = function(ev) {
-                   ev.preventDefault();
-                   location.href = "/";
-                }
                 success(xhr, isNew);
             } else {
                 error(xhr);
