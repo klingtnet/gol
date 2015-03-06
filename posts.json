@@ -8,7 +8,7 @@
 	{
 		"id": "afba23f74deef888d8b5902bb91dcd19",
 		"title": "Ideas for tomorrow",
-		"content": "- LDAP\r\n- sqlite backend\r\n- ~~markdown preview (tabbed)~~\r\n- ~~render single posts (see above)~~ (simply uses the `posts` template, passing only one post)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
+		"content": "- LDAP\r\n- ~~sqlite backend~~\r\n- ~~markdown preview (tabbed)~~\r\n- ~~render single posts (see above)~~ (simply uses the `posts` template, passing only one post)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
 		"created": "2015-03-05T19:48:22.614542642+01:00"
 	},
 	{
@@ -26,7 +26,7 @@
 	{
 		"id": "2e17c142291319144a7951d0c8dfce08",
 		"title": "More crazy ideas",
-		"content": "- a public feed\r\n- groups\r\n- make the title on the index page customizable (just \"gol\" sounds weird, maybe use the hostname if it's not localhost?)\r\n- ...",
+		"content": "- a public feed\r\n- groups\r\n- ~~make the title on the index page customizable (just \"gol\" sounds weird, maybe use the hostname if it's not localhost?)~~ (handled by moving to `.tmpl`)\r\n- ...",
 		"created": "2015-03-04T17:55:10.586950061+01:00"
 	},
 	{
@@ -68,7 +68,7 @@
 	{
 		"id": "f02d5a77c0f4a4953b856e5397df3d01",
 		"title": "Next up",
-		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- ~~pluggable storage backends~~\r\n- tests! (~~at least some~~; some more, please!)\r\n- markdown preview (either live or tabbed)\r\n- ~~cancel new post/edit~~\r\n- ~~mathjax support~~\r\n- ~~css *blingbling* :)~~",
+		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- ~~pluggable storage backends~~\r\n- tests! (~~at least some~~; some more, please!)\r\n- ~~markdown preview (either live or tabbed)~~\r\n- ~~cancel new post/edit~~\r\n- ~~mathjax support~~\r\n- ~~css *blingbling* :)~~",
 		"created": "2015-03-04T12:01:55.115207523+01:00"
 	},
 	{
