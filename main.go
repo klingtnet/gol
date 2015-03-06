@@ -130,7 +130,14 @@ func main() {
 		}
 
 		if r.Method == "GET" {
-			json.NewEncoder(w).Encode(p)
+			if r.Header.Get("Content-Type") == "application/json" {
+				json.NewEncoder(w).Encode(p)
+			} else {
+				m := make(map[string]interface{})
+				m["title"] = p.Title
+				m["posts"] = []post.Post{*p}
+				templates.ExecuteTemplate(w, "posts", m)
+			}
 		} else if r.Method == "HEAD" {
 			// already handle by p == nil above
 		} else if r.Method == "POST" {
