@@ -53,6 +53,7 @@
 
     // render the markdown preview
     function renderPreview() {
+        var form = document.getElementById("edit-post");
         var titleInput = document.getElementById("edit-title");
         var contentInput = document.getElementById("edit-content");
         var previewSelect = document.getElementById("preview-select");
@@ -64,7 +65,8 @@
             xhr.open('POST', '/posts/preview');
             var post = {
                 "title": titleInput.value,
-                "content": contentInput.value
+                "content": contentInput.value,
+                "created": form.dataset.postCreated || new Date().toISOString()
             };
             xhr.send(JSON.stringify(post));
             xhr.onload = function(ev) {

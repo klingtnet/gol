@@ -19,6 +19,9 @@ func Templates(assetBase string) *template.Template {
 			htmlContent = sanitizePolicy.SanitizeBytes(htmlContent)
 			return template.HTML(htmlContent)
 		},
+		"isoTime": func(t time.Time) string {
+			return t.Format(time.RFC3339)
+		},
 		"formatTime": func(t time.Time) template.HTML {
 			// thanks, http://fuckinggodateformat.com/ (every language/template thingy should have this)
 			isoDate := t.Format(time.RFC3339)

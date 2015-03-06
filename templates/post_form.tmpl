@@ -11,7 +11,7 @@
 					</ul>
 				</div>
 
-				<form method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}">
+				<form id="edit-post" method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}"{{ if .post }}data-post-created="{{ .post.Created | isoTime }}"{{ end }}>
 					<div id="edit-tab" class="col s12">
 						<div class="input-field">
 							<input id="edit-title" class="markdown-input" name="title" autofocus required type="text" value="{{ .post.Title }}" />

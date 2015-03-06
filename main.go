@@ -128,7 +128,6 @@ func main() {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 			} else {
-				post.Created = time.Now()
 				templates.ExecuteTemplate(w, "post", post)
 			}
 		} else {
