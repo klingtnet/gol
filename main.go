@@ -55,7 +55,7 @@ func init() {
 		assetBase = fmt.Sprintf("https://cdn.rawgit.com/KLINGTdotNET/gol/%s/assets", Version)
 	}
 
-	fmt.Printf("gol - v%s (%s)\n", Version, Environment)
+	fmt.Printf("gol - %s (%s)\n", Version, Environment)
 }
 
 func main() {
