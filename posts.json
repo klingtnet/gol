@@ -8,7 +8,7 @@
 	{
 		"id": "afba23f74deef888d8b5902bb91dcd19",
 		"title": "Ideas for tomorrow",
-		"content": "- LDAP\r\n- sqlite backend\r\n- markdown preview (tabbed)\r\n- ~~render single posts (see above)~~ (simply uses the `posts` template, passing only one post)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
+		"content": "- LDAP\r\n- sqlite backend\r\n- ~~markdown preview (tabbed)~~\r\n- ~~render single posts (see above)~~ (simply uses the `posts` template, passing only one post)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
 		"created": "2015-03-05T19:48:22.614542642+01:00"
 	},
 	{
