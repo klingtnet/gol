@@ -212,7 +212,7 @@ func main() {
 	port := getEnv("PORT", "5000")
 	if *ssl == "" {
 		fmt.Printf("Listening on http://0.0.0.0:%s\n", port)
-		log.Fatal(http.ListenAndServe(":" + port, nil))
+		log.Fatal(http.ListenAndServe(":"+port, nil))
 	} else {
 		certAndKey := strings.Split(*ssl, ",")
 		if len(certAndKey) != 2 {
@@ -220,6 +220,6 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("Listening on https://0.0.0.0:%s\n", port)
-		log.Fatal(http.ListenAndServeTLS(":" + port, certAndKey[0], certAndKey[1], nil))
+		log.Fatal(http.ListenAndServeTLS(":"+port, certAndKey[0], certAndKey[1], nil))
 	}
 }
