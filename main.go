@@ -48,6 +48,16 @@ func renderPosts(templates *template.Template, w http.ResponseWriter, posts []po
 	templates.ExecuteTemplate(w, "posts", m)
 }
 
+func createPost(title, content string) post.Post {
+	now := time.Now()
+	return post.Post{
+		Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
+		Title:   title,
+		Content: content,
+		Created: now,
+	}
+}
+
 func writeJson(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)
@@ -103,12 +113,14 @@ func main() {
 			posts, _ := store.FindAll()
 			renderPosts(templates, w, posts)
 		} else if r.Method == "POST" { // POST creates a new post
-			now := time.Now()
-			post := post.Post{
-				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
-				Title:   r.FormValue("title"),
-				Content: r.FormValue("content"),
-				Created: now,
+			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
+
+			var post post.Post
+			if isJson {
+				json.NewDecoder(r.Body).Decode(&post)
+				post = createPost(post.Title, post.Content)
+			} else {
+				post = createPost(r.FormValue("title"), r.FormValue("content"))
 			}
 
 			err := store.Create(post)
@@ -117,7 +129,12 @@ func main() {
 				return
 			}
 
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			if isJson {
+				w.WriteHeader(http.StatusAccepted)
+				writeJson(w, post)
+			} else {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+			}
 		} else {
 			notImplemented(w)
 		}
