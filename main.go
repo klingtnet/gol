@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ogier/pflag"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -84,6 +85,19 @@ func main() {
 			log.Println("Warning: Could not read posts.json:", err)
 		}
 		renderPosts(templates, w, posts)
+	})
+
+	router.HandleFunc("/markdown", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" { // use post to receive content in body
+			markdown, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			} else {
+				templates.ExecuteTemplate(w, "markdown", string(markdown))
+			}
+		} else {
+			notImplemented(w)
+		}
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
