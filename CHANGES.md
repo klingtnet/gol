@@ -1,6 +1,7 @@
 # next - (not yet released)
 
 - fullscreen editing mode
+- saving posts without interupting writing them
 
 # 0.2.0 - Now we're getting fancy...
 
