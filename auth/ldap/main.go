@@ -7,6 +7,7 @@ import (
 	"github.com/heyLu/ldap"
 	"log"
 	"net/url"
+	"strings"
 
 	auth ".."
 )
@@ -34,6 +35,10 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 	if dnTemplate == "" {
 		return nil, errors.New("no dnTemplate configured")
 	}
+	// fix circumvent uri restrictions
+	dnTemplate = strings.Replace(dnTemplate, ",", ";", -1)
+	dnTemplate = strings.Replace(dnTemplate, ":", "=", -1)
+	dnTemplate = strings.Replace(dnTemplate, "{}", "%s", -1)
 
 	ldapAuth := Auth{
 		addr: u.Host,
