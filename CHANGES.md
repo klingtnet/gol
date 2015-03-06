@@ -1,4 +1,4 @@
-# 0.2.0 - (not yet released)
+# 0.2.0 - Now we're getting fancy...
 
 - markdown preview while editing posts
 - sqlite backend works (except sync, which returns nil)
