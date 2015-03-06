@@ -1,6 +1,4 @@
-package templates
-
-var postFormTemplate = `
+{{ define "post_form" }}
 {{ template "header" . }}
 
 			<h1>{{ .title }}</h1>
@@ -26,4 +24,5 @@ var postFormTemplate = `
 				</a>
 			</form>
 
-{{template "footer" . }}`
+{{ template "footer" . }}
+{{ end }}

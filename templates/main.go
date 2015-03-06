@@ -32,11 +32,12 @@ func Templates(assetBase string) *template.Template {
 
 	templateTree := template.New("").Funcs(templateFuncs)
 
-	// templates defined in templates/*.go
-	template.Must(templateTree.New("header").Parse(headerTemplate))
-	template.Must(templateTree.New("footer").Parse(footerTemplate))
-	template.Must(templateTree.New("post_form").Parse(postFormTemplate))
-	template.Must(templateTree.New("posts").Parse(postsTemplate))
+	// shared templates (must be loaded first to be availlable in the
+	// page templates)
+	template.Must(templateTree.ParseGlob("templates/shared/*.tmpl"))
+
+	// page templates
+	template.Must(templateTree.ParseGlob("templates/*.tmpl"))
 
 	return templateTree
 }

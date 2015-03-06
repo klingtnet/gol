@@ -1,6 +1,4 @@
-package templates
-
-var postsTemplate = `
+{{ define "posts" }}
 {{ template "header" .}}
 
 			<div id="edit-button" class="fixed-action-btn">
@@ -23,4 +21,5 @@ var postsTemplate = `
 			<hr />
 			{{ end }}
 
-{{ template "footer" . }}`
+{{ template "footer" . }}
+{{ end }}
