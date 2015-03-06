@@ -137,6 +137,12 @@
                 if (isNew) {
                     form.dataset.postId = xhr.response.id;
                 }
+
+                // don't create the post again
+                form.onsubmit = function(ev) {
+                   ev.preventDefault();
+                   location.href = "/";
+                }
                 success(xhr, isNew);
             } else {
                 error(xhr);
