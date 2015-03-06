@@ -17,8 +17,9 @@ import (
 
 	"./post"
 	"./storage"
-	_ "./storage/memory"
 	_ "./storage/json"
+	_ "./storage/memory"
+	_ "./storage/sqlite"
 	"./templates"
 )
 
