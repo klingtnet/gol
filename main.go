@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/ogier/pflag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -37,6 +38,13 @@ func getEnv(key, defaultValue string) string {
 		return defaultValue
 	}
 	return value
+}
+
+func renderPosts(templates *template.Template, w http.ResponseWriter, posts []post.Post) {
+	m := make(map[string]interface{})
+	m["title"] = "gol"
+	m["posts"] = post.Reverse(post.ByDate(posts))
+	templates.ExecuteTemplate(w, "posts", m)
 }
 
 func notImplemented(w http.ResponseWriter) {
@@ -75,10 +83,7 @@ func main() {
 		if err != nil {
 			log.Println("Warning: Could not read posts.json:", err)
 		}
-		m := make(map[string]interface{})
-		m["title"] = "gol"
-		m["posts"] = post.Reverse(post.ByDate(posts))
-		templates.ExecuteTemplate(w, "posts", m)
+		renderPosts(templates, w, posts)
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
