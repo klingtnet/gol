@@ -34,6 +34,8 @@ Listening on https://0.0.0.0:5000
     sanitize html
 * [mux](https://github.com/gorilla/mux) for routing (supports url
     parameters)
+* [pflag](https://github.com/ogier/pflag) for posix-style command-line
+    flags
 
 Thanks for writing those libraries!
 

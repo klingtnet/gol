@@ -5,9 +5,9 @@ import (
 	"crypto/md5"
 	"encoding/binary"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/ogier/pflag"
 	"log"
 	"net/http"
 	"os"
@@ -47,8 +47,8 @@ func notImplemented(w http.ResponseWriter) {
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
-var ssl = flag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
-var storageUrl = flag.String("storage", "json://posts.json", "the storage to connect to")
+var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
+var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
 
 func init() {
 	if Environment == "production" {
@@ -59,7 +59,7 @@ func init() {
 }
 
 func main() {
-	flag.Parse()
+	pflag.Parse()
 
 	store, err := storage.Open(*storageUrl)
 	if err != nil {
