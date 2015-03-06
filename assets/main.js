@@ -122,17 +122,22 @@
         var editTitle = document.getElementById("edit-title");
         var editContent = document.getElementById("edit-content");
 
+        var isNew = !form.dataset.postId;
         var post = {
             "title": editTitle.value,
             "content": editContent.value
         };
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/posts/' + form.dataset.postId);
+        xhr.open('POST', isNew ? '/posts' : '/posts/' + form.dataset.postId);
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.responseType = 'json'
         xhr.onload = function(ev) {
             if (xhr.status >= 200 && xhr.status < 300) {
-                 success(xhr);
+                if (isNew) {
+                    form.dataset.postId = xhr.response.id;
+                }
+                success(xhr, isNew);
             } else {
                 error(xhr);
             }
@@ -148,8 +153,8 @@
         editContent.addEventListener("keydown", function(ev) {
             if (ev.ctrlKey && ev.keyCode == 83) { // Ctrl-S
                 ev.preventDefault();
-                savePost(function() {
-                    displayMessage("post saved");
+                savePost(function(_, isNew) {
+                    displayMessage(isNew ? "post created" : "post saved");
                 }, function(xhr) { console.error(xhr.status, xhr.statusText); });
             }
         });
