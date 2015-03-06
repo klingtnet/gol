@@ -1,5 +1,11 @@
 [
 	{
+		"id": "72dee39f0afe3c51a7faf77f5767b113",
+		"title": "Authentication and users",
+		"content": "*Note: These are two topics, one is possible without the others, because we don't need to support management of users, just authenticating them.*\r\n\r\n## Authentication\r\n\r\n- pluggable (already implemented, `ldap` and `insecure` exist, something with hashes instead of password still to be done)\r\n- the ruby on rails tutorial has a very good, in-depth tutorial on how to roll your own session management, which we need to do\r\n    - [Chapter 8 - Log in, log out](https://www.railstutorial.org/book/log_in_log_out)\r\n    - we can use [bcrypt](http://godoc.org/golang.org/x/crypto/bcrypt) to hash the passwords\r\n- for each request, we need to check whether the user is logged in (indicated by a cookie)\r\n- if not, we need to redirect to a login page\r\n- maybe we can do the checking in a middleware?\r\n\r\nOops, there are several variants of authentication:\r\n\r\n- require login on *all* pages\r\n- require login for editing\r\n- require login (and correct user) for private posts\r\n\r\n## Posts by users\r\n\r\nAfter we have working authentication, we can implement \"user posts\", e.g. users can only edit their own posts, not those of others.",
+		"created": "2015-03-06T17:15:37.821841211+01:00"
+	},
+	{
 		"id": "5c006f42cf92323afddba19d5cf5a619",
 		"title": "Changing the templates",
 		"content": "The templates are now in `templates/*.tmpl` and `templates/shared/*.tmpl`.\r\n\r\nAfter changing them, you need to restart the server to see your changes. If you don't want to do this, you can use [our fork of gin](https://github.com/heyLu/gin) (install with `go get -v github.com/heyLu/gin`) which has support for restarting when the templates change.\r\n\r\nThere's also a `make` target for this: run `make watch` to watch `.go` and `.tmpl` files and then start changing things!",
