@@ -1,0 +1,14 @@
+{{ define "post" }}
+<article id="post-{{ .Id }}" class="post">
+	<div class="post-actions">
+		<a href="/posts/{{ .Id }}/edit" class="btn-floating waves-effect waves-light blue tooltipped" data-tooltip="Edit post"><i class="mdi-editor-mode-edit"></i></a>
+		<a href="/posts/{{ .Id }}" data-method="DELETE" class="btn-floating waves-effect waves-light red tooltipped" data-tooltip="Delete post"><i class="mdi-action-delete"></i></a>
+	</div>
+	<h1><a href="/posts/{{ .Id }}">{{ .Title }}</a></h1>
+	<h5>Posted on <i>{{ .Created | formatTime }}</i></h5>
+
+	<div class="post-content flow-text">
+		{{ .Content | markdown }}
+	</div>
+</article>
+{{ end }}
