@@ -1,5 +1,11 @@
 [
 	{
+		"id": "2563f0d12a97f66cefeaaa2e6be6d1e1",
+		"title": "Imagining the ideal routing/request API",
+		"content": "There are a few things that we do that are currently... at least suboptimal:\n\n- `r.Method == \"GET\"`\n- `r.Header.Get(\"Content-Type\") == \"application/json\"\n- `/posts` != `/posts/`?\n\nThere should be a \"pretty\"/well-engineered way to do this. I.e., we're going to have to either find a library that does what we want or write one ourselves. Let's think about how the code should look like.\n\n```go\nrouter.Match(\"/posts\", func(w http.ResponseWriter, r *http.Request) {\n    renderer := negotiate(r) // if we don't find one, it'll be an error renderer?\n    renderer.render(w)\n})\n```",
+		"created": "2015-03-06T18:54:22.811328282+01:00"
+	},
+	{
 		"id": "5c006f42cf92323afddba19d5cf5a619",
 		"title": "Changing the templates",
 		"content": "The templates are now in `templates/*.tmpl` and `templates/shared/*.tmpl`.\r\n\r\nAfter changing them, you need to restart the server to see your changes. If you don't want to do this, you can use [our fork of gin](https://github.com/heyLu/gin) (install with `go get -v github.com/heyLu/gin`) which has support for restarting when the templates change.\r\n\r\nThere's also a `make` target for this: run `make watch` to watch `.go` and `.tmpl` files and then start changing things!",
