@@ -79,7 +79,20 @@
         });
     }
 
+    // open editor on doubleclick
+    function editorOnDoubleClick() {
+        var posts = document.querySelectorAll(".post");
+        for (var i = 0; i < posts.length; i++) {
+            (function(post) {
+                post.addEventListener('dblclick', function(ev) {
+                    location.href = '/posts/' + post.dataset.id + '/edit';
+                });
+            })(posts[i]);
+        }
+    }
+
     tabOverride();
     supportDeleteLinks();
     renderPreview();
+    editorOnDoubleClick();
 })();

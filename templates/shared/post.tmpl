@@ -1,5 +1,5 @@
 {{ define "post" }}
-<article id="post-{{ .Id }}" class="post">
+<article id="post-{{ .Id }}" data-id="{{ .Id }}" class="post">
 	<div class="post-actions">
 		<a href="/posts/{{ .Id }}/edit" class="btn-floating waves-effect waves-light blue tooltipped" data-tooltip="Edit post"><i class="mdi-editor-mode-edit"></i></a>
 		<a href="/posts/{{ .Id }}" data-method="DELETE" class="btn-floating waves-effect waves-light red tooltipped" data-tooltip="Delete post"><i class="mdi-action-delete"></i></a>
