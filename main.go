@@ -48,6 +48,11 @@ func renderPosts(templates *template.Template, w http.ResponseWriter, posts []po
 	templates.ExecuteTemplate(w, "posts", m)
 }
 
+func writeJson(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
 func notImplemented(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotImplemented)
 	w.Write([]byte("not implemented"))
@@ -146,7 +151,7 @@ func main() {
 
 		if r.Method == "GET" {
 			if r.Header.Get("Content-Type") == "application/json" {
-				json.NewEncoder(w).Encode(p)
+				writeJson(w, p)
 			} else {
 				m := make(map[string]interface{})
 				m["title"] = p.Title
