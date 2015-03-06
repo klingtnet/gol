@@ -130,9 +130,7 @@ func main() {
 		}
 
 		if r.Method == "GET" {
-			if p != nil {
-				json.NewEncoder(w).Encode(p)
-			}
+			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "HEAD" {
 			// already handle by p == nil above
 		} else if r.Method == "POST" {
