@@ -5,7 +5,7 @@
 
 			<form method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}">
 				<div class="input-field">
-					<input id="edit-title" class="markdown-input" name="title" autofocus required type="text" value="{{ .post.Title }}"></input>
+					<input id="edit-title" class="markdown-input" name="title" autofocus required type="text" value="{{ .post.Title }}" />
 					<label for="edit-title">Titlemania</label>
 				</div>
 				<div class="input-field">
