@@ -1,6 +1,7 @@
 # 0.2.0 - (not yet released)
 
 - markdown preview while editing posts
+- sqlite backend works (except sync, which returns nil)
 
 # 0.1.0 - Hello World!
 
