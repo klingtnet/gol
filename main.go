@@ -87,19 +87,6 @@ func main() {
 		renderPosts(templates, w, posts)
 	})
 
-	router.HandleFunc("/markdown", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "POST" { // use post to receive content in body
-			markdown, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-			} else {
-				templates.ExecuteTemplate(w, "markdown", string(markdown))
-			}
-		} else {
-			notImplemented(w)
-		}
-	})
-
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		posts, _ := store.FindAll()
 		w.Header().Set("Content-Type", "application/json")
@@ -133,6 +120,19 @@ func main() {
 
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
 		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
+	})
+
+	router.HandleFunc("/posts/preview", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" { // use post to receive content in body
+			markdown, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			} else {
+				templates.ExecuteTemplate(w, "markdown", string(markdown))
+			}
+		} else {
+			notImplemented(w)
+		}
 	})
 
 	router.HandleFunc("/posts/{id}", func(w http.ResponseWriter, r *http.Request) {

@@ -60,7 +60,7 @@
 
         previewSelect.addEventListener("click", function(ev) {
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/markdown');
+            xhr.open('POST', '/posts/preview');
             xhr.send(textarea.value);
             xhr.onload = function(ev) {
                 if (xhr.status == 200) {
