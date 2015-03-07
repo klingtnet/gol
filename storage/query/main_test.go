@@ -107,6 +107,16 @@ func TestFromParamsFindMultipleSame(t *testing.T) {
 	tu.ExpectEqual(t, *q.Find, Field{"title", "ho"})
 }
 
+func TestFromParamsStart(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?start=42")
+	tu.ExpectEqual(t, q.Start, 42)
+}
+
+func TestFromParamsCount(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?count=42")
+	tu.ExpectEqual(t, q.Count, 42)
+}
+
 func fromParams(t *testing.T, rawUrl string) (*Query, error) {
 	u, err := url.Parse(rawUrl)
 	if err != nil {

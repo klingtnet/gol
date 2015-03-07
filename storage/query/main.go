@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -139,14 +140,34 @@ func FromParams(params url.Values) (*Query, error) {
 	for key, vals := range params {
 		fmt.Println(key, vals)
 
-		//v := vals[0]
+		v := vals[0]
 		switch key {
 		case "id":
 			b = b.Find("id", vals[len(vals) - 1])
 		case "title":
 			b = b.Find("title", vals[len(vals) - 1])
+		case "start":
+			start, err := parsePos("start", v)
+			if err != nil {
+				return nil, err
+			}
+			b = b.Start(start)
+		case "count":
+			count, err := parsePos("count", v)
+			if err != nil {
+				return nil, err
+			}
+			b = b.Count(count)
 		}
 	}
 
 	return b.Build()
+}
+
+func parsePos(name, s string) (uint, error) {
+	i, err := strconv.ParseUint(s, 10, 32)
+	if err != nil {
+		return 0, errors.New(fmt.Sprint("invalid %s value:", name, err))
+	}
+	return uint(i), nil
 }
