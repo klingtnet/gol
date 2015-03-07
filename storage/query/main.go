@@ -25,7 +25,12 @@ type Query struct{
 }
 
 // default is to get all posts, sorted by created date
-var Default = Query{nil, -1, -1, []Field{}, nil, nil, "created", false}
+var Default = Query{nil, -1, -1, nil, nil, nil, "created", false}
+
+func IsDefault(q Query) bool {
+	return q.Find == nil && q.Start == -1 && q.Count == -1 && q.Matches == nil &&
+		q.RangeStart == nil && q.RangeEnd == nil && q.SortBy == "created" && !q.Reverse
+}
 
 type Builder interface {
 	Find(field string, value interface{}) Builder // exact match
