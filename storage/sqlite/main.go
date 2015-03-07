@@ -10,6 +10,7 @@ import (
 	"time"
 
 	storage ".."
+	"../query"
 	"../../post"
 )
 
@@ -49,6 +50,10 @@ func (m Backend) Open(u *url.URL) (storage.Store, error) {
 		db: db,
 	})
 	return store, nil
+}
+
+func (s *Store) Find(q query.Query) ([]post.Post, error) {
+	return nil, errors.New("queries not supported")
 }
 
 // Store interface methods

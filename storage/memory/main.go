@@ -6,6 +6,7 @@ import (
 
 	"../../post"
 	storage ".."
+	"../query"
 )
 
 type Backend struct{}
@@ -27,6 +28,10 @@ func FromPosts(posts []post.Post) *Store {
 	return &Store{
 		posts: posts,
 	}
+}
+
+func (s *Store) Find(q query.Query) ([]post.Post, error) {
+	return nil, errors.New("queries not supported")
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {

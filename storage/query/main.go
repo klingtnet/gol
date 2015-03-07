@@ -6,13 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"time"
-
-	"../../post"
 )
-
-type Queryable interface{
-	Find(query Query) ([]post.Post, error)
-}
 
 type Field struct {
 	Name string

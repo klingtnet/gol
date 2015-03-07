@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -9,6 +10,7 @@ import (
 	storage ".."
 	"../../post"
 	"../memory"
+	"../query"
 )
 
 type Backend struct{}
@@ -69,6 +71,10 @@ func writePosts(path string, posts []post.Post) error {
 	}
 
 	return ioutil.WriteFile(path, postsJson, 0644)
+}
+
+func (s *Store) Find(q query.Query) ([]post.Post, error) {
+	return nil, errors.New("queries not supported")
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
