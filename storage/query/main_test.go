@@ -2,6 +2,7 @@ package query
 
 import (
 	"errors"
+	"net/url"
 	"testing"
 
 	tu "../../util/testing"
@@ -81,3 +82,49 @@ func TestInvalidBuildMustError(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestFromParamsFind(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?id=1")
+
+	tu.RequireNotNil(t, q.Find)
+	tu.ExpectEqual(t, *q.Find, Field{"id", "1"})
+}
+
+func TestFromParamsFindMultiple(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?id=1&title=Hello, World!")
+
+	tu.RequireNotNil(t, q.Find)
+	tu.ExpectEqual(t, *q.Find, Field{"title", "Hello, World!"})
+}
+
+func TestFromParamsFindMultipleSame(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?id=1&id=2")
+	tu.RequireNotNil(t, q.Find)
+	tu.ExpectEqual(t, *q.Find, Field{"id", "2"})
+
+	q, _ = fromParams(t, "http://not.es/find?title=hey&title=ho")
+	tu.RequireNotNil(t, q.Find)
+	tu.ExpectEqual(t, *q.Find, Field{"title", "ho"})
+}
+
+func fromParams(t *testing.T, rawUrl string) (*Query, error) {
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	vals := u.Query()
+	q, err := FromParams(vals)
+	if err != nil {
+		t.Fatal("%s should be parsable: %s", rawUrl, err)
+		return nil, err
+	}
+	return q, nil
+}
+
+// Start(10).Count(30) == ?start=10&count=30
+// Range(now, twoDaysAgo) == ?range=now:twoDaysAgo
+// SortBy("title") == ?sort=title
+// Reverse() == ?reverse
+// Matches("title", "cool") == ?match=title:cool
+// Matches("title", "cool").Matches("content", "wow") == ?match=title:cool&match=content:cool

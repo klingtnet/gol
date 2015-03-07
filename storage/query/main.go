@@ -134,9 +134,19 @@ func (q Invalid) Build() (*Query, error) {
 
 // build from query params
 func FromParams(params url.Values) (*Query, error) {
-	for key, val := range params {
-		fmt.Println(key, val)
+	b := New()
+
+	for key, vals := range params {
+		fmt.Println(key, vals)
+
+		//v := vals[0]
+		switch key {
+		case "id":
+			b = b.Find("id", vals[len(vals) - 1])
+		case "title":
+			b = b.Find("title", vals[len(vals) - 1])
+		}
 	}
 
-	return nil, nil
+	return b.Build()
 }
