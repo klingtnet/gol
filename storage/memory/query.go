@@ -75,12 +75,16 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 			posts = append(posts, post)
 		}
 
+		// check Match, RangeStart and RangeEnd here
 		n += 1
 
 		if n >= start + count {
+			// break
 			return posts, nil
 		}
 	}
+
+	// use SortBy and Reverse here
 
 	return posts, nil
 }
