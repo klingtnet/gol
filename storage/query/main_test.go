@@ -3,19 +3,9 @@ package query
 import (
 	"errors"
 	"testing"
+
+	tu "../../util/testing"
 )
-
-func expectEqual(t *testing.T, actual, expected interface{}) {
-	if actual != expected {
-		t.Errorf("%#v != %#v", actual, expected)
-	}
-}
-
-func requireEqual(t *testing.T, actual, expected interface{}) {
-	if actual != expected {
-		t.Fatalf("%#v != %#v", actual, expected)
-	}
-}
 
 func TestFind(t *testing.T) {
 	b := &DefaultBuilder{}
@@ -27,8 +17,8 @@ func TestFind(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
-	expectEqual(t, q.Find.Name, "id")
-	expectEqual(t, q.Find.Value, "42")
+	tu.ExpectEqual(t, q.Find.Name, "id")
+	tu.ExpectEqual(t, q.Find.Value, "42")
 }
 
 func TestStart(t *testing.T) {
@@ -49,10 +39,10 @@ func TestMatchSingle(t *testing.T) {
 		t.Fail()
 	}
 
-	requireEqual(t, len(q.Matches), 1)
+	tu.RequireEqual(t, len(q.Matches), 1)
 
 	field := Field{"title", "cool"} 
-	expectEqual(t, q.Matches[0], field)
+	tu.ExpectEqual(t, q.Matches[0], field)
 }
 
 func TestMatchMultiple(t *testing.T) {
@@ -63,11 +53,11 @@ func TestMatchMultiple(t *testing.T) {
 		t.Fatal("invalid .Match query:", err)
 	}
 
-	requireEqual(t, len(q.Matches), 2)
+	tu.RequireEqual(t, len(q.Matches), 2)
 
 	fields := []Field{Field{"id", "42"}, Field{"title", "cool"}}
-	expectEqual(t, q.Matches[0], fields[0])
-	expectEqual(t, q.Matches[1], fields[1])
+	tu.ExpectEqual(t ,q.Matches[0], fields[0])
+	tu.ExpectEqual(t, q.Matches[1], fields[1])
 }
 
 func TestValueInHelper(t *testing.T) {
