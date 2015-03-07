@@ -55,3 +55,7 @@ type Store interface {
 func Query() query.Builder {
 	return query.New()
 }
+
+func QueryFromURL(u *url.URL) (*query.Query, error) {
+	return query.FromParams(u.Query())
+}
