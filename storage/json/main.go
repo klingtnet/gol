@@ -2,7 +2,6 @@ package json
 
 import (
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -74,7 +73,7 @@ func writePosts(path string, posts []post.Post) error {
 }
 
 func (s *Store) Find(q query.Query) ([]post.Post, error) {
-	return nil, errors.New("queries not supported")
+	return s.memoryBackend.Find(q)
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
