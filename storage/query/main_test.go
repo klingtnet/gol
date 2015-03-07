@@ -7,6 +7,10 @@ import (
 	tu "../../util/testing"
 )
 
+func TestIsDefault(t *testing.T) {
+	tu.ExpectEqual(t, IsDefault(Default), true)
+}
+
 func TestFind(t *testing.T) {
 	b := &DefaultBuilder{}
 	if _, err := b.Find("invalid field", "_").Build(); err == nil {
