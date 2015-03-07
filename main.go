@@ -11,6 +11,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -68,6 +69,14 @@ func notImplemented(w http.ResponseWriter) {
 	w.Write([]byte("not implemented"))
 }
 
+func queryFromURL(u *url.URL, store storage.Store) ([]post.Post, error) {
+	q, err := storage.QueryFromURL(u)
+	if err != nil {
+		return nil, err
+	}
+	return store.Find(*q)
+}
+
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
@@ -103,15 +112,23 @@ func main() {
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-		posts, _ := store.FindAll()
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(posts)
+		posts, err := queryFromURL(r.URL, store)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(posts)
+		}
 	}).Methods("GET").Headers("Content-Type", "application/json")
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
-			posts, _ := store.FindAll()
-			renderPosts(templates, w, posts)
+			posts, err := queryFromURL(r.URL, store)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			} else {
+				renderPosts(templates, w, posts)
+			}
 		} else if r.Method == "POST" { // POST creates a new post
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
 
