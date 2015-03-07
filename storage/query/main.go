@@ -138,7 +138,7 @@ func FromParams(params url.Values) (*Query, error) {
 	b := New()
 
 	for key, vals := range params {
-		fmt.Println(key, vals)
+		//fmt.Println(key, vals)
 
 		v := vals[0]
 		switch key {
