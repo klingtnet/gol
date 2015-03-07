@@ -17,6 +17,18 @@ func RequireEqual(t *testing.T, actual, expected interface{}) {
 	}
 }
 
+func ExpectNil(t *testing.T, value interface{}) {
+	if value != nil {
+		t.Errorf("%#v should be non-nil", value)
+	}
+}
+
+func RequireNil(t *testing.T, value interface{}) {
+	if value != nil {
+		t.Fatalf("%#v should be non-nil", value)
+	}
+}
+
 func ExpectNotNil(t *testing.T, value interface{}) {
 	if value == nil {
 		t.Errorf("%#v should be non-nil", value)
