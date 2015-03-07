@@ -11,6 +11,12 @@ func expectEqual(t *testing.T, actual, expected interface{}) {
 	}
 }
 
+func requireEqual(t *testing.T, actual, expected interface{}) {
+	if actual != expected {
+		t.Fatalf("%#v != %#v", actual, expected)
+	}
+}
+
 func TestFind(t *testing.T) {
 	b := &DefaultBuilder{}
 	if _, err := b.Find("invalid field", "_").Build(); err == nil {
@@ -21,12 +27,8 @@ func TestFind(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
-	if q.Find.Name != "id" {
-		t.Error("'id' must be the Name")
-	}
-	if q.Find.Value != "42" {
-		t.Error("'42' must be the Value")
-	}
+	expectEqual(t, q.Find.Name, "id")
+	expectEqual(t, q.Find.Value, "42")
 }
 
 func TestStart(t *testing.T) {
@@ -46,13 +48,11 @@ func TestMatchSingle(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
-	if len(q.Matches) != 1 {
-		t.Fatal(len(q.Matches), "!=", 1)
-	}
+
+	requireEqual(t, len(q.Matches), 1)
+
 	field := Field{"title", "cool"} 
-	if q.Matches[0] != field {
-		t.Error(q.Matches, "!=", field)
-	}
+	expectEqual(t, q.Matches[0], field)
 }
 
 func TestMatchMultiple(t *testing.T) {
@@ -63,9 +63,11 @@ func TestMatchMultiple(t *testing.T) {
 		t.Fatal("invalid .Match query:", err)
 	}
 
-	if len(q.Matches) != 2 {
-		t.Fatal(len(q.Matches), "!=", 2)
-	}
+	requireEqual(t, len(q.Matches), 2)
+
+	fields := []Field{Field{"id", "42"}, Field{"title", "cool"}}
+	expectEqual(t, q.Matches[0], fields[0])
+	expectEqual(t, q.Matches[1], fields[1])
 }
 
 func TestValueInHelper(t *testing.T) {
