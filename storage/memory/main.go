@@ -6,7 +6,6 @@ import (
 
 	"../../post"
 	storage ".."
-	"../query"
 )
 
 type Backend struct{}
@@ -30,9 +29,7 @@ func FromPosts(posts []post.Post) *Store {
 	}
 }
 
-func (s *Store) Find(q query.Query) ([]post.Post, error) {
-	return nil, errors.New("queries not supported")
-}
+// `Find` is implemented in `./query.go`
 
 func (s *Store) FindById(id string) (*post.Post, error) {
 	for i, post := range s.posts {
@@ -83,4 +80,3 @@ func (s *Store) Delete(id string) error {
 	s.posts = newPosts
 	return nil
 }
-
