@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"../../post"
+	"../query"
 	storage ".."
 	tu "../../util/testing"
 )
@@ -79,4 +80,62 @@ func TestFindByIdWithQuery(t *testing.T) {
 	tu.ExpectEqual(t, postsFind[0].Id, "1")
 	tu.ExpectEqual(t, postsFind[0].Title, "first post")
 
+}
+
+func TestFindStart(t *testing.T) {
+	store := FromPosts(examplePosts)
+
+	q, _ := storage.Query().Start(0).Build()
+	posts := expectFindN(t, store, q, 2)
+	tu.ExpectEqual(t, posts[0].Id, "1")
+	tu.ExpectEqual(t, posts[1].Id, "2")
+
+	q, _ = storage.Query().Start(1).Build()
+	posts = expectFindN(t, store, q, 1)
+	tu.ExpectEqual(t, posts[0].Id, "2")
+
+	q, _ = storage.Query().Start(2).Build()
+	expectFindN(t, store, q, 0)
+}
+
+func TestFindCount(t *testing.T) {
+	store := FromPosts(examplePosts)
+
+	q, _ := storage.Query().Count(0).Build()
+	expectFindN(t, store, q, 0)
+
+	q, _ = storage.Query().Count(1).Build()
+	posts := expectFindN(t, store, q, 1)
+	tu.ExpectEqual(t, posts[0].Id, "1")
+
+	q, _ = storage.Query().Count(2).Build()
+	posts = expectFindN(t, store, q, 2)
+	tu.ExpectEqual(t, posts[0].Id, "1")
+	tu.ExpectEqual(t, posts[1].Id, "2")
+
+	q, _ = storage.Query().Count(3).Build()
+	expectFindN(t, store, q, 2)
+}
+
+func TestFindStartCount(t *testing.T) {
+	ps := append(examplePosts, post.Post{"3", "third post", "the end of an era", time.Now()})
+	store := FromPosts(ps)
+
+	q, _ := storage.Query().Start(0).Count(3).Build()
+	expectFindN(t, store, q, 3)
+
+	q, _ = storage.Query().Start(1).Count(3).Build()
+	expectFindN(t, store, q, 2)
+
+	q, _ = storage.Query().Start(1).Count(1).Build()
+	expectFindN(t, store, q, 1)
+}
+
+func expectFindN(t *testing.T, store storage.Store, q *query.Query, n int) []post.Post {
+	posts, err := store.Find(*q)
+
+	tu.RequireNil(t, err)
+	tu.RequireEqual(t, len(posts), n)
+
+	return posts
 }

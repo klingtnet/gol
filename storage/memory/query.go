@@ -24,8 +24,10 @@ func (s *Store) Find(q query.Query) ([]post.Post, error) {
 		return s.FindAll()
 	} else if q.Find != nil {
 		return s.runFind(q)
+	} else if q.Start != -1 || q.Count != -1 {
+		return s.runQuery(q)
 	} else {
-		return nil, errors.New("queries not supported")
+		return nil, errors.New("query not supported")
 	}
 }
 
@@ -49,4 +51,36 @@ func (s *Store) runFind(q query.Query) ([]post.Post, error) {
 	}
 
 	return []post.Post{}, nil
+}
+
+func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
+	start := 0
+	if q.Start != -1 {
+		start = q.Start
+	}
+	count := len(s.posts)
+	if q.Count != -1 {
+		count = q.Count
+	}
+
+	// TODO: adjust capacity based on query type (probably not)
+	posts := make([]post.Post, 0, 10)
+	if count == 0 || start >= len(s.posts) {
+		return posts, nil
+	}
+
+	n := 0
+	for _, post := range s.posts {
+		if n >= start {
+			posts = append(posts, post)
+		}
+
+		n += 1
+
+		if n >= start + count {
+			return posts, nil
+		}
+	}
+
+	return posts, nil
 }
