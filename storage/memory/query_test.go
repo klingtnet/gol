@@ -47,3 +47,36 @@ func TestFindAll(t *testing.T) {
 
 	tu.ExpectEqual(t, len(postsFindAll), len(postsFind))
 }
+
+func TestFindByTitle(t *testing.T) {
+	store := FromPosts(examplePosts)
+
+	q, _ := storage.Query().Find("title", "first post").Build()
+	postsFind, err := store.Find(*q)
+
+	tu.RequireNil(t, err)
+	tu.RequireEqual(t, len(postsFind), 1)
+	tu.ExpectEqual(t, postsFind[0].Title, "first post")
+
+
+	q, _ = storage.Query().Find("title", "second post").Build()
+	postsFind, err = store.Find(*q)
+
+	tu.RequireNil(t, err)
+	tu.RequireEqual(t, len(postsFind), 1)
+	tu.ExpectEqual(t, postsFind[0].Title, "second post")
+	tu.ExpectEqual(t, postsFind[0].Content, "a realization.")
+}
+
+func TestFindByIdWithQuery(t *testing.T) {
+	store := FromPosts(examplePosts)
+
+	q, _ := storage.Query().Find("id", "1").Build()
+	postsFind, err := store.runFind(*q)
+
+	tu.RequireNil(t, err)
+	tu.RequireEqual(t, len(postsFind), 1)
+	tu.ExpectEqual(t, postsFind[0].Id, "1")
+	tu.ExpectEqual(t, postsFind[0].Title, "first post")
+
+}
