@@ -51,3 +51,7 @@ type Store interface {
 }
 
 // Reload = Close + Open
+
+func Query() query.Builder {
+	return query.New()
+}

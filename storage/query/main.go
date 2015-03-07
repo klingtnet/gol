@@ -43,6 +43,10 @@ type Builder interface {
 	Build() (*Query, error)
 }
 
+func New() Builder {
+	return &DefaultBuilder{Default}
+}
+
 type DefaultBuilder struct {
 	query Query
 }
