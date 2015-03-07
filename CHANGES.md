@@ -2,6 +2,8 @@
 
 - fullscreen editing mode
 - saving posts without interupting writing them
+- a query interface (with nice syntax in Go, accessible via url
+    parameters)
 
 # 0.2.0 - Now we're getting fancy...
 
