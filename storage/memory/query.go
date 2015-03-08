@@ -3,6 +3,7 @@ package memory
 import (
 	"errors"
 	"fmt"
+	"sort"
 
 	"../../post"
 	"../query"
@@ -20,17 +21,12 @@ func (s *Store) Find(q query.Query) ([]post.Post, error) {
 			return nil, err
 		}
 		return []post.Post{*p}, nil
-	} else if query.IsDefault(q) {
-		return s.FindAll()
 	} else if q.Find != nil {
 		return s.runFind(q)
-	} else if q.Start != -1 || q.Count != -1 {
-		return s.runQuery(q)
 	} else {
-		return nil, errors.New("query not supported")
+		return s.runQuery(q)
 	}
 }
-
 
 func (s *Store) runFind(q query.Query) ([]post.Post, error) {
 	for _, p := range s.posts {
@@ -69,6 +65,20 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 		return posts, nil
 	}
 
+	var sortable sort.Interface
+	switch q.SortBy {
+	case "created":
+		sortable = post.ByDate(s.posts)
+	default:
+		return nil, errors.New(fmt.Sprintf("sorting by %s not supported", q.SortBy))
+	}
+
+	if q.Reverse {
+		sort.Sort(sort.Reverse(sortable))
+	} else {
+		sort.Sort(sortable)
+	}
+
 	n := 0
 	for _, post := range s.posts {
 		if n >= start {
@@ -83,8 +93,6 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 			return posts, nil
 		}
 	}
-
-	// use SortBy and Reverse here
 
 	return posts, nil
 }

@@ -131,11 +131,40 @@ func TestFindStartCount(t *testing.T) {
 	expectFindN(t, store, q, 1)
 }
 
+func TestFindSortBy(t *testing.T) {
+	ps := append(examplePosts, post.Post{"3", "a new beginning", "...", time.Now()})
+	store := FromPosts(ps)
+
+	q, _ := storage.Query().Build()
+	expectOrder(t, store, q, []string{"1", "2", "3"})
+
+	q, _ = storage.Query().SortBy("created").Build()
+	expectOrder(t, store, q, []string{"1", "2", "3"})
+
+	q, _ = storage.Query().SortBy("created").Reverse().Build()
+	expectOrder(t, store, q, []string{"3", "2", "1"})
+
+	//q, _ = storage.Query().SortBy("title").Build()
+	//expectOrder(t, store, q, []string{"1", "2"})
+}
+
 func expectFindN(t *testing.T, store storage.Store, q *query.Query, n int) []post.Post {
 	posts, err := store.Find(*q)
 
 	tu.RequireNil(t, err)
 	tu.RequireEqual(t, len(posts), n)
+
+	return posts
+}
+
+func expectOrder(t *testing.T, store storage.Store, q *query.Query, ids []string) []post.Post {
+	posts, err := store.Find(*q)
+
+	tu.RequireNil(t, err)
+	tu.RequireEqual(t, len(ids), len(posts))
+	for i, post := range posts {
+		tu.RequireEqual(t, ids[i], post.Id)
+	}
 
 	return posts
 }
