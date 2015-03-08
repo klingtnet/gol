@@ -144,8 +144,11 @@ func TestFindSortBy(t *testing.T) {
 	q, _ = storage.Query().SortBy("created").Reverse().Build()
 	expectOrder(t, store, q, []string{"3", "2", "1"})
 
-	//q, _ = storage.Query().SortBy("title").Build()
-	//expectOrder(t, store, q, []string{"1", "2"})
+	q, _ = storage.Query().SortBy("title").Build()
+	expectOrder(t, store, q, []string{"3", "1", "2"})
+
+	q, _ = storage.Query().SortBy("title").Reverse().Build()
+	expectOrder(t, store, q, []string{"2", "1", "3"})
 }
 
 func expectFindN(t *testing.T, store storage.Store, q *query.Query, n int) []post.Post {

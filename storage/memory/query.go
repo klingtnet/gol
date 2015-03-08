@@ -71,6 +71,8 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 	switch q.SortBy {
 	case "created":
 		sortable = post.ByDate(s.posts)
+	case "title":
+		sortable = post.ByTitle(s.posts)
 	default:
 		return nil, errors.New(fmt.Sprintf("sorting by %s not supported", q.SortBy))
 	}
