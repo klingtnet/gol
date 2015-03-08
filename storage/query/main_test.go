@@ -117,6 +117,19 @@ func TestFromParamsCount(t *testing.T) {
 	tu.ExpectEqual(t, q.Count, 42)
 }
 
+func TestFromParamsSortBy(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find")
+	tu.ExpectEqual(t, q.SortBy, "created")
+
+	q, _ = fromParams(t, "http://not.es/find?sort=created")
+	tu.ExpectEqual(t, q.SortBy, "created")
+
+	q, _ = fromParams(t, "http://not.es/find?sort=title")
+	tu.ExpectEqual(t, q.SortBy, "title")
+
+	// invalid params handled by fromParams
+}
+
 func fromParams(t *testing.T, rawUrl string) (*Query, error) {
 	u, err := url.Parse(rawUrl)
 	if err != nil {
@@ -126,7 +139,7 @@ func fromParams(t *testing.T, rawUrl string) (*Query, error) {
 	vals := u.Query()
 	q, err := FromParams(vals)
 	if err != nil {
-		t.Fatal("%s should be parsable: %s", rawUrl, err)
+		t.Fatalf("%s should be parsable: %s", rawUrl, err)
 		return nil, err
 	}
 	return q, nil

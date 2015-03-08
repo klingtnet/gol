@@ -166,6 +166,8 @@ func FromParams(params url.Values) (*Query, error) {
 				return nil, err
 			}
 			b = b.Count(count)
+		case "sort":
+			b = b.SortBy(v)
 		}
 	}
 
