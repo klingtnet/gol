@@ -4,3 +4,4 @@ gol
 .vimrc
 *.sublime-project
 *.sublime-workspace
+assets/*.css.map
