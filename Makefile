@@ -5,9 +5,12 @@ NAME = gol-${VERSION}
 PORT ?= 5000
 SOURCES = $(shell find . -type f -name '*.go')
 
-build: ${SOURCES}
+build: ${SOURCES} main.css
 	go get -d -v .
 	go build -ldflags "-X main.Version \"${VERSION}\"" main.go
+
+main.css:
+	@sassc -m assets/main.scss assets/main.css
 
 release: build
 	mkdir ${NAME}
