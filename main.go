@@ -45,7 +45,7 @@ func getEnv(key, defaultValue string) string {
 func renderPosts(templates *template.Template, w http.ResponseWriter, posts []post.Post) {
 	m := make(map[string]interface{})
 	m["title"] = "gol"
-	m["posts"] = post.Reverse(post.ByDate(posts))
+	m["posts"] = posts
 	templates.ExecuteTemplate(w, "posts", m)
 }
 
