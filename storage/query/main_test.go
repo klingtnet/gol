@@ -131,10 +131,3 @@ func fromParams(t *testing.T, rawUrl string) (*Query, error) {
 	}
 	return q, nil
 }
-
-// Start(10).Count(30) == ?start=10&count=30
-// Range(now, twoDaysAgo) == ?range=now:twoDaysAgo
-// SortBy("title") == ?sort=title
-// Reverse() == ?reverse
-// Matches("title", "cool") == ?match=title:cool
-// Matches("title", "cool").Matches("content", "wow") == ?match=title:cool&match=content:cool
