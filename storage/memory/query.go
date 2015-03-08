@@ -50,6 +50,7 @@ func (s *Store) runFind(q query.Query) ([]post.Post, error) {
 }
 
 func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
+	// set defaults for start and count if not set
 	start := 0
 	if q.Start != -1 {
 		start = q.Start
@@ -59,12 +60,13 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 		count = q.Count
 	}
 
-	// TODO: adjust capacity based on query type (probably not)
+	// short-circuit if there is nothing to find
 	posts := make([]post.Post, 0, 10)
 	if count == 0 || start >= len(s.posts) {
 		return posts, nil
 	}
 
+	// sort and reverse
 	var sortable sort.Interface
 	switch q.SortBy {
 	case "created":
@@ -79,6 +81,7 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 		sort.Sort(sortable)
 	}
 
+	// actually find the posts
 	n := 0
 	for _, post := range s.posts {
 		if n >= start {
@@ -89,8 +92,7 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 		n += 1
 
 		if n >= start + count {
-			// break
-			return posts, nil
+			break
 		}
 	}
 
