@@ -2,3 +2,5 @@ main
 gol
 .*.swp
 .vimrc
+*.sublime-project
+*.sublime-workspace
