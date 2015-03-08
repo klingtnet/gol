@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -71,7 +72,7 @@ func (b *DefaultBuilder) Count(count uint) Builder {
 }
 
 func (b *DefaultBuilder) Match(field string, value interface{}) Builder {
-	if err := valueIn("match", field, []string{"id", "title"}); err != nil {
+	if err := valueIn("match", field, []string{"id", "title", "content"}); err != nil {
 		return Invalid{err}
 	}
 	b.query.Matches = append(b.query.Matches, Field{field, value})
@@ -172,6 +173,14 @@ func FromParams(params url.Values) (*Query, error) {
 			if v == "" || v == "true" {
 				b = b.Reverse()
 			}
+		case "match":
+			for _, m := range vals {
+				matchPair := strings.Split(m, ":")
+				if len(matchPair) != 2 {
+					return nil, errors.New(fmt.Sprintf("match must be of the format field:match, but was '%s'", m))
+				}
+				b = b.Match(matchPair[0], matchPair[1])
+			}
 		}
 	}
 
@@ -185,3 +194,5 @@ func parsePos(name, s string) (uint, error) {
 	}
 	return uint(i), nil
 }
+
+// for the `gol` backend: func ToParams(q Query) url.Values

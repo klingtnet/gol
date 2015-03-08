@@ -141,6 +141,24 @@ func TestFromParamsReverse(t *testing.T) {
 	tu.ExpectEqual(t, q.Reverse, false)
 }
 
+func TestFromParamsMatch(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find")
+	tu.RequireEqual(t, len(q.Matches), 0)
+
+	q, _ = fromParams(t, "http://not.es/find?match=id:x")
+	tu.RequireEqual(t, len(q.Matches), 1)
+	tu.ExpectEqual(t, q.Matches[0], Field{"id", "x"})
+
+	q, _ = fromParams(t, "http://not.es/find?match=title:cool")
+	tu.RequireEqual(t, len(q.Matches), 1)
+	tu.ExpectEqual(t, q.Matches[0], Field{"title", "cool"})
+
+	q, _ = fromParams(t, "http://not.es/find?match=title:cool&match=content:very")
+	tu.RequireEqual(t, len(q.Matches), 2)
+	tu.ExpectEqual(t, q.Matches[0], Field{"title", "cool"})
+	tu.ExpectEqual(t, q.Matches[1], Field{"content", "very"})
+}
+
 func fromParams(t *testing.T, rawUrl string) (*Query, error) {
 	u, err := url.Parse(rawUrl)
 	if err != nil {
