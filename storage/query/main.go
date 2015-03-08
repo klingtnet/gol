@@ -91,6 +91,7 @@ func (b *DefaultBuilder) SortBy(field string) Builder {
 	if err := valueIn("sort", field, []string{"title", "created"}); err != nil {
 		return Invalid{err}
 	}
+	b.query.SortBy = field
 	return b
 }
 
