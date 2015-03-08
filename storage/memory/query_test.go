@@ -151,6 +151,21 @@ func TestFindSortBy(t *testing.T) {
 	expectOrder(t, store, q, []string{"2", "1", "3"})
 }
 
+func TestFindMatch(t *testing.T) {
+	store := FromPosts(examplePosts)
+
+	q, _ := storage.Query().Match("title", "first").Build()
+	posts := expectFindN(t, store, q, 1)
+	tu.ExpectEqual(t, posts[0].Title, "first post")
+
+	q, _ = storage.Query().Match("title", "post").Build()
+	expectFindN(t, store, q, 2)
+
+	q, _ = storage.Query().Match("content", "!").Build()
+	expectFindN(t, store, q, 1)
+	tu.ExpectEqual(t, posts[0].Content, "something important!")
+}
+
 func expectFindN(t *testing.T, store storage.Store, q *query.Query, n int) []post.Post {
 	posts, err := store.Find(*q)
 

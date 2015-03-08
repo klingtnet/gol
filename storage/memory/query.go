@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 
 	"../../post"
 	"../query"
@@ -86,12 +87,15 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 	// actually find the posts
 	n := 0
 	for _, post := range s.posts {
-		if n >= start {
+		isMatch := queryMatches(q, post)
+
+		if isMatch && n >= start {
 			posts = append(posts, post)
 		}
 
-		// check Match, RangeStart and RangeEnd here
-		n += 1
+		if isMatch {
+			n += 1
+		}
 
 		if n >= start + count {
 			break
@@ -99,4 +103,26 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func queryMatches(q query.Query, p post.Post) bool {
+	for _, f := range q.Matches {
+		var val string
+
+		// TODO: handle default case (error?)
+		switch f.Name {
+		case "id":
+			val = p.Id
+		case "title":
+			val = p.Title
+		case "content":
+			val = p.Content
+		}
+
+		if !strings.Contains(val, f.Value.(string)) {
+			return false
+		}
+	}
+
+	return true
 }
