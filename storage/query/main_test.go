@@ -127,7 +127,18 @@ func TestFromParamsSortBy(t *testing.T) {
 	q, _ = fromParams(t, "http://not.es/find?sort=title")
 	tu.ExpectEqual(t, q.SortBy, "title")
 
-	// invalid params handled by fromParams
+	// invalid params checked by fromParams
+}
+
+func TestFromParamsReverse(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?reverse")
+	tu.ExpectEqual(t, q.Reverse, true)
+
+	q, _ = fromParams(t, "http://not.es/find?reverse=true")
+	tu.ExpectEqual(t, q.Reverse, true)
+
+	q, _ = fromParams(t, "http://not.es/find?reverse=false")
+	tu.ExpectEqual(t, q.Reverse, false)
 }
 
 func fromParams(t *testing.T, rawUrl string) (*Query, error) {

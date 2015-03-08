@@ -168,6 +168,10 @@ func FromParams(params url.Values) (*Query, error) {
 			b = b.Count(count)
 		case "sort":
 			b = b.SortBy(v)
+		case "reverse":
+			if v == "" || v == "true" {
+				b = b.Reverse()
+			}
 		}
 	}
 
