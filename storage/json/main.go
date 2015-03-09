@@ -9,6 +9,7 @@ import (
 	storage ".."
 	"../../post"
 	"../memory"
+	"../query"
 )
 
 type Backend struct{}
@@ -40,7 +41,7 @@ func (m Backend) Open(u *url.URL) (storage.Store, error) {
 	}
 
 	store := &Store{
-		path: path,
+		path:          path,
 		memoryBackend: memory.FromPosts(posts),
 	}
 
@@ -71,6 +72,10 @@ func writePosts(path string, posts []post.Post) error {
 	return ioutil.WriteFile(path, postsJson, 0644)
 }
 
+func (s *Store) Find(q query.Query) ([]post.Post, error) {
+	return s.memoryBackend.Find(q)
+}
+
 func (s *Store) FindById(id string) (*post.Post, error) {
 	return s.memoryBackend.FindById(id)
 }
@@ -79,20 +84,17 @@ func (s *Store) FindAll() ([]post.Post, error) {
 	return s.memoryBackend.FindAll()
 }
 
-
 func (s *Store) Create(post post.Post) error {
 	s.memoryBackend.Create(post)
 	posts, _ := s.memoryBackend.FindAll()
 	return writePosts(s.path, posts)
 }
 
-
 func (s *Store) Update(updatedPost post.Post) error {
 	s.memoryBackend.Update(updatedPost)
 	posts, _ := s.memoryBackend.FindAll()
 	return writePosts(s.path, posts)
 }
-
 
 func (s *Store) Delete(id string) error {
 	s.memoryBackend.Delete(id)

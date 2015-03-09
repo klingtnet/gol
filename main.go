@@ -11,6 +11,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -44,7 +45,7 @@ func getEnv(key, defaultValue string) string {
 func renderPosts(templates *template.Template, w http.ResponseWriter, posts []post.Post) {
 	m := make(map[string]interface{})
 	m["title"] = "gol"
-	m["posts"] = post.Reverse(post.ByDate(posts))
+	m["posts"] = posts
 	templates.ExecuteTemplate(w, "posts", m)
 }
 
@@ -66,6 +67,35 @@ func writeJson(w http.ResponseWriter, data interface{}) {
 func notImplemented(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotImplemented)
 	w.Write([]byte("not implemented"))
+}
+
+func urlHasQuery(u *url.URL) bool {
+	q := u.Query()
+	if len(q) == 0 {
+		return false
+	}
+
+	queryParams := []string{"id", "title", "start", "end", "sort", "reverse", "match", "range"}
+	for _, p := range queryParams {
+		if _, ok := q[p]; ok {
+			return true
+		}
+	}
+
+	return false
+}
+
+func queryFromURL(u *url.URL, store storage.Store) ([]post.Post, error) {
+	defaultQuery, _ := storage.Query().Reverse().Build()
+	if !urlHasQuery(u) {
+		return store.Find(*defaultQuery)
+	}
+
+	q, err := storage.QueryFromURL(u)
+	if err != nil {
+		return nil, err
+	}
+	return store.Find(*q)
 }
 
 var Environment = getEnv("ENVIRONMENT", "development")
@@ -103,15 +133,23 @@ func main() {
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-		posts, _ := store.FindAll()
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(posts)
+		posts, err := queryFromURL(r.URL, store)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(posts)
+		}
 	}).Methods("GET").Headers("Content-Type", "application/json")
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
-			posts, _ := store.FindAll()
-			renderPosts(templates, w, posts)
+			posts, err := queryFromURL(r.URL, store)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			} else {
+				renderPosts(templates, w, posts)
+			}
 		} else if r.Method == "POST" { // POST creates a new post
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
 

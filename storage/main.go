@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"../post"
+	"./query"
 )
 
 var registeredBackends = map[string]Backend{}
@@ -36,6 +37,7 @@ type Backend interface {
 }
 
 type Store interface {
+	Find(query query.Query) ([]post.Post, error)
 	FindById(id string) (*post.Post, error)
 	FindAll() ([]post.Post, error)
 
@@ -49,3 +51,11 @@ type Store interface {
 }
 
 // Reload = Close + Open
+
+func Query() query.Builder {
+	return query.New()
+}
+
+func QueryFromURL(u *url.URL) (*query.Query, error) {
+	return query.FromParams(u.Query())
+}

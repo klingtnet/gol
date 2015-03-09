@@ -4,6 +4,7 @@ VERSION ?= $(shell git describe --always --tags)
 NAME = gol-${VERSION}
 PORT ?= 5000
 SOURCES = $(shell find . -type f -name '*.go')
+SOURCE_DIRS = $(shell find . -type f -name '*.go' | xargs dirname | sort | uniq)
 
 build: ${SOURCES} main.css
 	go get -d -v .
@@ -12,7 +13,10 @@ build: ${SOURCES} main.css
 main.css:
 	@sassc -m assets/main.scss assets/main.css
 
-release: build
+test:
+	go test -v ${SOURCE_DIRS}
+
+release: build test
 	mkdir ${NAME}
 	cp -R assets ${NAME}/assets
 	cp -R templates ${NAME}/templates
