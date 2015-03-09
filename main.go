@@ -125,7 +125,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		posts, err := store.FindAll()
+		posts, err := queryFromURL(r.URL, store)
 		if err != nil {
 			log.Println("Warning: Could not read posts.json:", err)
 		}
