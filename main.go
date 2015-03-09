@@ -18,6 +18,7 @@ import (
 
 	"./post"
 	"./storage"
+	_ "./storage/gol"
 	_ "./storage/json"
 	_ "./storage/memory"
 	_ "./storage/sqlite"
