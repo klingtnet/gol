@@ -165,6 +165,22 @@ func TestFindMatch(t *testing.T) {
 	tu.ExpectEqual(t, posts[0].Content, "something important!")
 }
 
+func TestFindRange(t *testing.T) {
+	t1 := time.Date(2015, 3, 1, 12, 31, 0, 0, time.UTC)
+	t2 := time.Date(2015, 3, 2, 19, 21, 0, 0, time.UTC)
+	t3 := time.Date(2015, 3, 7, 11, 57, 0, 0, time.UTC)
+	ps := []post.Post{
+		post.Post{"1", "one", "yes!", t1},
+		post.Post{"2", "two", "maybe", t2},
+		post.Post{"3", "three", "no?", t3},
+	}
+	store := FromPosts(ps)
+
+	q, _ := storage.Query().Range(t1, t2).Build()
+	expectFindN(t, store, q, 2)
+	expectOrder(t, store, q, []string{"1", "2"})
+}
+
 func expectFindN(t *testing.T, store storage.Store, q *query.Query, n int) []post.Post {
 	posts, err := store.Find(*q)
 

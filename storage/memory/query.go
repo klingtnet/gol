@@ -106,6 +106,12 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 }
 
 func queryMatches(q query.Query, p post.Post) bool {
+	if q.RangeStart != nil && q.RangeEnd != nil {
+		if !(q.RangeStart.Unix() <= p.Created.Unix() && p.Created.Unix() <= q.RangeEnd.Unix()) {
+			return false
+		}
+	}
+
 	for _, f := range q.Matches {
 		var val string
 
