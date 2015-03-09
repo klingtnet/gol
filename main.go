@@ -127,9 +127,10 @@ func main() {
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		posts, err := queryFromURL(r.URL, store)
 		if err != nil {
-			log.Println("Warning: Could not read posts.json:", err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			renderPosts(templates, w, posts)
 		}
-		renderPosts(templates, w, posts)
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
