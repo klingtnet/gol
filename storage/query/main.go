@@ -209,4 +209,28 @@ func parsePos(name, s string) (uint, error) {
 	return uint(i), nil
 }
 
-// TODO: func ToParams(q Query) url.Values
+func ToParams(q Query) url.Values {
+	vals := url.Values{}
+	if q.Find != nil {
+		vals[q.Find.Name] = []string{q.Find.Value.(string)}
+	}
+	if q.Start != -1 {
+		vals["start"] = []string{fmt.Sprint(q.Start)}
+	}
+	if q.Count != -1 {
+		vals["count"] = []string{fmt.Sprint(q.Count)}
+	}
+	if len(q.Matches) >= 1 {
+		ms := make([]string, 0, len(q.Matches))
+		for _, m := range q.Matches {
+			ms = append(ms, fmt.Sprintf("%s:%s", m.Name, m.Value.(string)))
+		}
+		vals["match"] = ms
+	}
+	if q.RangeStart != nil && q.RangeEnd != nil {
+		vals["range"] = []string{fmt.Sprintf("%s,%s", q.RangeStart.Format(time.RFC3339), q.RangeEnd.Format(time.RFC3339))}
+	}
+	vals["sort"] = []string{q.SortBy}
+	vals["reverse"] = []string{fmt.Sprint(q.Reverse)}
+	return vals
+}
