@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/url"
 	"testing"
+	"time"
 
 	tu "../../util/testing"
 )
@@ -157,6 +158,15 @@ func TestFromParamsMatch(t *testing.T) {
 	tu.RequireEqual(t, len(q.Matches), 2)
 	tu.ExpectEqual(t, q.Matches[0], Field{"title", "cool"})
 	tu.ExpectEqual(t, q.Matches[1], Field{"content", "very"})
+}
+
+func TestFromParamsRange(t *testing.T) {
+	q, _ := fromParams(t, "http://not.es/find?range=2015-03-03T09:35:00Z,2015-03-09T10:50:00Z")
+	tu.RequireNotNil(t, q.RangeStart)
+	tu.ExpectEqual(t, *q.RangeStart, time.Date(2015, 3, 3, 9, 35, 0, 0, time.UTC))
+
+	tu.RequireNotNil(t, q.RangeEnd)
+	tu.ExpectEqual(t, *q.RangeEnd, time.Date(2015, 3, 9, 10, 50, 0, 0, time.UTC))
 }
 
 func fromParams(t *testing.T, rawUrl string) (*Query, error) {

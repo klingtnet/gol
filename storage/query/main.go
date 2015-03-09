@@ -181,6 +181,20 @@ func FromParams(params url.Values) (*Query, error) {
 				}
 				b = b.Match(matchPair[0], matchPair[1])
 			}
+		case "range":
+			rangePair := strings.Split(v, ",")
+			if len(rangePair) != 2 {
+				return nil, errors.New(fmt.Sprintf("range must be of the format `start,end`, but was '%s'", v))
+			}
+			start, err := time.Parse(time.RFC3339, rangePair[0])
+			if err != nil {
+				return nil, errors.New(fmt.Sprint("invalid range start: ", err))
+			}
+			end, err := time.Parse(time.RFC3339, rangePair[1])
+			if err != nil {
+				return nil, errors.New(fmt.Sprint("invalid range and: ", err))
+			}
+			b = b.Range(start, end)
 		}
 	}
 
