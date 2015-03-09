@@ -21,6 +21,7 @@ import (
 	_ "./storage/gol"
 	_ "./storage/json"
 	_ "./storage/memory"
+	_ "./storage/multi"
 	_ "./storage/sqlite"
 	"./templates"
 )
@@ -116,9 +117,24 @@ func init() {
 func main() {
 	pflag.Parse()
 
-	store, err := storage.Open(*storageUrl)
-	if err != nil {
-		log.Fatal(err)
+	var store storage.Store
+	storageUrls := strings.Split(*storageUrl, ",")
+	if len(storageUrls) > 1 {
+		multiUrl := fmt.Sprintf("multi://?primary=%s", url.QueryEscape(storageUrls[0]))
+		for _, storageUrl := range storageUrls[1:] {
+			multiUrl = fmt.Sprintf("%s&secondary=%s", multiUrl, url.QueryEscape(storageUrl))
+		}
+		var err error
+		store, err = storage.Open(multiUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		var err error
+		store, err = storage.Open(*storageUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	templates := templates.Templates(assetBase)
