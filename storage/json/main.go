@@ -41,7 +41,7 @@ func (m Backend) Open(u *url.URL) (storage.Store, error) {
 	}
 
 	store := &Store{
-		path: path,
+		path:          path,
 		memoryBackend: memory.FromPosts(posts),
 	}
 
@@ -84,20 +84,17 @@ func (s *Store) FindAll() ([]post.Post, error) {
 	return s.memoryBackend.FindAll()
 }
 
-
 func (s *Store) Create(post post.Post) error {
 	s.memoryBackend.Create(post)
 	posts, _ := s.memoryBackend.FindAll()
 	return writePosts(s.path, posts)
 }
 
-
 func (s *Store) Update(updatedPost post.Post) error {
 	s.memoryBackend.Update(updatedPost)
 	posts, _ := s.memoryBackend.FindAll()
 	return writePosts(s.path, posts)
 }
-
 
 func (s *Store) Delete(id string) error {
 	s.memoryBackend.Delete(id)

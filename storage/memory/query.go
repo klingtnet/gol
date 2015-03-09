@@ -97,7 +97,7 @@ func (s *Store) runQuery(q query.Query) ([]post.Post, error) {
 			n += 1
 		}
 
-		if n >= start + count {
+		if n >= start+count {
 			break
 		}
 	}

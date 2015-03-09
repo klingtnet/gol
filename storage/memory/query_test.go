@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"../../post"
-	"../query"
 	storage ".."
+	"../../post"
 	tu "../../util/testing"
+	"../query"
 )
 
 var examplePosts = []post.Post{
@@ -58,7 +58,6 @@ func TestFindByTitle(t *testing.T) {
 	tu.RequireNil(t, err)
 	tu.RequireEqual(t, len(postsFind), 1)
 	tu.ExpectEqual(t, postsFind[0].Title, "first post")
-
 
 	q, _ = storage.Query().Find("title", "second post").Build()
 	postsFind, err = store.Find(*q)

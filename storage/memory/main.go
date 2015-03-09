@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/url"
 
-	"../../post"
 	storage ".."
+	"../../post"
 )
 
 type Backend struct{}
 
-type Store struct{
+type Store struct {
 	posts []post.Post
 }
 

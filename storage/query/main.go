@@ -11,19 +11,19 @@ import (
 )
 
 type Field struct {
-	Name string
+	Name  string
 	Value interface{}
 }
 
-type Query struct{
-	Find *Field
-	Start int // negative == not specified
-	Count int
-	Matches []Field
+type Query struct {
+	Find       *Field
+	Start      int // negative == not specified
+	Count      int
+	Matches    []Field
 	RangeStart *time.Time
-	RangeEnd *time.Time
-	SortBy string
-	Reverse bool
+	RangeEnd   *time.Time
+	SortBy     string
+	Reverse    bool
 }
 
 // default is to get all posts, sorted by created date
@@ -123,13 +123,13 @@ type Invalid struct {
 	Err error
 }
 
-func (q Invalid) Find(field string, value interface{}) Builder { return q }
-func (q Invalid) Start(pos uint) Builder { return q }
-func (q Invalid) Count(pos uint) Builder { return q }
+func (q Invalid) Find(field string, value interface{}) Builder  { return q }
+func (q Invalid) Start(pos uint) Builder                        { return q }
+func (q Invalid) Count(pos uint) Builder                        { return q }
 func (q Invalid) Match(field string, value interface{}) Builder { return q }
-func (q Invalid) Range(start, end time.Time) Builder { return q }
-func (q Invalid) SortBy(field string) Builder { return q }
-func (q Invalid) Reverse() Builder { return q }
+func (q Invalid) Range(start, end time.Time) Builder            { return q }
+func (q Invalid) SortBy(field string) Builder                   { return q }
+func (q Invalid) Reverse() Builder                              { return q }
 
 func (q Invalid) Build() (*Query, error) {
 	return nil, q.Err
@@ -152,9 +152,9 @@ func FromParams(params url.Values) (*Query, error) {
 		v := vals[0]
 		switch key {
 		case "id":
-			b = b.Find("id", vals[len(vals) - 1])
+			b = b.Find("id", vals[len(vals)-1])
 		case "title":
-			b = b.Find("title", vals[len(vals) - 1])
+			b = b.Find("title", vals[len(vals)-1])
 		case "start":
 			start, err := parsePos("start", v)
 			if err != nil {

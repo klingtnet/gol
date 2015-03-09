@@ -46,7 +46,7 @@ func TestMatchSingle(t *testing.T) {
 
 	tu.RequireEqual(t, len(q.Matches), 1)
 
-	field := Field{"title", "cool"} 
+	field := Field{"title", "cool"}
 	tu.ExpectEqual(t, q.Matches[0], field)
 }
 
@@ -61,7 +61,7 @@ func TestMatchMultiple(t *testing.T) {
 	tu.RequireEqual(t, len(q.Matches), 2)
 
 	fields := []Field{Field{"id", "42"}, Field{"title", "cool"}}
-	tu.ExpectEqual(t ,q.Matches[0], fields[0])
+	tu.ExpectEqual(t, q.Matches[0], fields[0])
 	tu.ExpectEqual(t, q.Matches[1], fields[1])
 }
 
