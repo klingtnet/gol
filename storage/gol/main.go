@@ -2,9 +2,11 @@
 package gol
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -46,7 +48,7 @@ func (s *Store) Find(q query.Query) ([]post.Post, error) {
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
-	resp, err := s.doRequest("GET", fmt.Sprintf("/posts/%s", id))
+	resp, err := s.doRequest("GET", fmt.Sprintf("/posts/%s", id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +63,7 @@ func (s *Store) FindById(id string) (*post.Post, error) {
 }
 
 func (s *Store) FindAll() ([]post.Post, error) {
-	resp, err := s.doRequest("GET", "/posts")
+	resp, err := s.doRequest("GET", "/posts", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +78,21 @@ func (s *Store) FindAll() ([]post.Post, error) {
 }
 
 func (s *Store) Create(p post.Post) error {
-	return errors.New("not implemented")
+	postJson, err := json.Marshal(p)
+	if err != nil {
+		return err
+	}
+
+	resp, err := s.doRequest("POST", "/posts", bytes.NewBuffer(postJson))
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == http.StatusAccepted {
+		return nil
+	} else {
+		return errors.New(fmt.Sprintf("unexpected response code: %d (%s)", resp.StatusCode, resp.Status))
+	}
 }
 
 func (s *Store) Update(p post.Post) error {
@@ -87,9 +103,9 @@ func (s *Store) Delete(id string) error {
 	return errors.New("not implemented")
 }
 
-func (s *Store) doRequest(method, path string) (*http.Response, error) {
+func (s *Store) doRequest(method, path string, body io.Reader) (*http.Response, error) {
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", fmt.Sprintf("http://%s%s", s.addr, path), nil)
+	req, err := http.NewRequest(method, fmt.Sprintf("http://%s%s", s.addr, path), body)
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return nil, err
