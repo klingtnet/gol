@@ -40,7 +40,6 @@ func (s *Store) Find(q query.Query) ([]post.Post, error) {
 	var posts []post.Post
 	err = json.NewDecoder(resp.Body).Decode(&posts)
 	if err != nil {
-		fmt.Println("decode", err)
 		return nil, err
 	}
 
