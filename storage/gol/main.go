@@ -96,7 +96,21 @@ func (s *Store) Create(p post.Post) error {
 }
 
 func (s *Store) Update(p post.Post) error {
-	return errors.New("not implemented")
+	postJson, err := json.Marshal(p)
+	if err != nil {
+		return err
+	}
+
+	resp, err := s.doRequest("POST", fmt.Sprintf("/posts/%s", p.Id), bytes.NewBuffer(postJson))
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == http.StatusAccepted {
+		return nil
+	} else {
+		return errors.New(fmt.Sprintf("unexpected response code: %d (%s)", resp.StatusCode, resp.Status))
+	}
 }
 
 func (s *Store) Delete(id string) error {
