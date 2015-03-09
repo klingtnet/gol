@@ -25,7 +25,6 @@
                 var pos = textarea.selectionStart;
                 textarea.value = text.substr(0, pos) + '    ' + text.substr(pos);
                 // select nothing
-                console.log(textarea.selectionStart, textarea.selectionEnd, textarea);
                 textarea.selectionStart = pos + 4;
                 textarea.selectionEnd = pos + 4;
             }
