@@ -1,5 +1,11 @@
 [
 	{
+		"id": "cc826404d2faf080ba9d1738d4a5e8b6",
+		"title": "Introducing the query interface",
+		"content": "## For users\r\n\r\nYou can search posts now!\r\n\r\nFind all kittens here: \u003chttp://notes.papill0n.org/?match=content:kitten\u003e\r\n\r\n## For developers\r\n\r\nWant to find out what posts about cats you wrote in the last week? Here you go:\r\n\r\n```go\r\nnow := time.Now()\r\nq, _ := storage.Query().\r\n            Match(\"content\", \"cat\").\r\n            Range(now.Add(-7*24*time.Hour), now)\r\n```\r\n\r\n## What's missing/open questions\r\n\r\n- default to `reverse` when sorting by created?\r\n- how should multiple matches be handled?\r\n    - the current implementation handles it as `AND`\r\n    - would be handy to have `match=content:cat\u0026match=content:kitten` return all results involving cats *OR* kittens",
+		"created": "2015-03-09T14:51:58.791656315+01:00"
+	},
+	{
 		"id": "2563f0d12a97f66cefeaaa2e6be6d1e1",
 		"title": "Imagining the ideal routing/request API",
 		"content": "There are a few things that we do that are currently... at least suboptimal:\n\n- `r.Method == \"GET\"`\n- `r.Header.Get(\"Content-Type\") == \"application/json\"\n- `/posts` != `/posts/`?\n\nThere should be a \"pretty\"/well-engineered way to do this. I.e., we're going to have to either find a library that does what we want or write one ourselves. Let's think about how the code should look like.\n\n```go\nrouter.Match(\"/posts\", func(w http.ResponseWriter, r *http.Request) {\n    renderer := negotiate(r) // if we don't find one, it'll be an error renderer?\n    renderer.render(w)\n})\n```",
