@@ -33,13 +33,7 @@ func (s *Store) Find(q query.Query) ([]post.Post, error) {
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", fmt.Sprintf("http://%s/posts/%s", s.addr, id), nil)
-	req.Header.Set("Content-Type", "application/json")
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.Do(req)
+	resp, err := s.doRequest("GET", fmt.Sprintf("/posts/%s", id))
 	if err != nil {
 		return nil, err
 	}
@@ -67,4 +61,19 @@ func (s *Store) Update(p post.Post) error {
 
 func (s *Store) Delete(id string) error {
 	return errors.New("not implemented")
+}
+
+func (s *Store) doRequest(method, path string) (*http.Response, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://%s%s", s.addr, path), nil)
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
