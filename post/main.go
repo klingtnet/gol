@@ -33,5 +33,3 @@ func Reverse(sortable sort.Interface) sort.Interface {
 	sort.Sort(sort.Reverse(sortable))
 	return sortable
 }
-
-
