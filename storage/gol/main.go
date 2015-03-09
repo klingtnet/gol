@@ -2,7 +2,10 @@
 package gol
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"net/url"
 
 	storage ".."
@@ -30,9 +33,24 @@ func (s *Store) Find(q query.Query) ([]post.Post, error) {
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
-	// make GET request to s.addr/posts/<id>
-	// deserialize response
-	return nil, errors.New("not implemented")
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://%s/posts/%s", s.addr, id), nil)
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var p post.Post
+	err = json.NewDecoder(resp.Body).Decode(&p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
 }
 
 func (s *Store) FindAll() ([]post.Post, error) {
