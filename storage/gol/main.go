@@ -114,7 +114,16 @@ func (s *Store) Update(p post.Post) error {
 }
 
 func (s *Store) Delete(id string) error {
-	return errors.New("not implemented")
+	resp, err := s.doRequest("DELETE", fmt.Sprintf("/posts/%s", id), nil)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	} else {
+		return errors.New(fmt.Sprintf("unexpected response code: %d (%s)", resp.StatusCode, resp.Status))
+	}
 }
 
 func (s *Store) doRequest(method, path string, body io.Reader) (*http.Response, error) {
