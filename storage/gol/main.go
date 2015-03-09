@@ -29,7 +29,20 @@ func (b Backend) Open(u *url.URL) (storage.Store, error) {
 }
 
 func (s *Store) Find(q query.Query) ([]post.Post, error) {
-	return nil, errors.New("not implemented")
+	if q.Find != nil && q.Find.Name == "id" {
+		id, ok := q.Find.Value.(string)
+		if !ok {
+			return nil, errors.New("id must be a string")
+		}
+
+		p, err := s.FindById(id)
+		if err != nil {
+			return nil, err
+		}
+		return []post.Post{*p}, nil
+	} else {
+		return s.FindAll()
+	}
 }
 
 func (s *Store) FindById(id string) (*post.Post, error) {
@@ -48,7 +61,18 @@ func (s *Store) FindById(id string) (*post.Post, error) {
 }
 
 func (s *Store) FindAll() ([]post.Post, error) {
-	return nil, errors.New("not implemented")
+	resp, err := s.doRequest("GET", "/posts")
+	if err != nil {
+		return nil, err
+	}
+
+	var posts []post.Post
+	err = json.NewDecoder(resp.Body).Decode(&posts)
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }
 
 func (s *Store) Create(p post.Post) error {
