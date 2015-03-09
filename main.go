@@ -69,7 +69,28 @@ func notImplemented(w http.ResponseWriter) {
 	w.Write([]byte("not implemented"))
 }
 
+func urlHasQuery(u *url.URL) bool {
+	q := u.Query()
+	if len(q) == 0 {
+		return false
+	}
+
+	queryParams := []string{"id", "title", "start", "end", "sort", "reverse", "match", "range"}
+	for _, p := range queryParams {
+		if _, ok := q[p]; ok {
+			return true
+		}
+	}
+
+	return false
+}
+
 func queryFromURL(u *url.URL, store storage.Store) ([]post.Post, error) {
+	defaultQuery, _ := storage.Query().Reverse().Build()
+	if !urlHasQuery(u) {
+		return store.Find(*defaultQuery)
+	}
+
 	q, err := storage.QueryFromURL(u)
 	if err != nil {
 		return nil, err
