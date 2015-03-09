@@ -138,5 +138,9 @@ func (s *Store) doRequest(method, path string, body io.Reader) (*http.Response, 
 		return nil, err
 	}
 
+	if resp.StatusCode >= 400 {
+		return nil, errors.New(resp.Status)
+	}
+
 	return resp, nil
 }
