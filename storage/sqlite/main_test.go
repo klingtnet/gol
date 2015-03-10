@@ -50,6 +50,27 @@ func tSetup(t *testing.T) (storage.Store, func()) {
 	}
 }
 
+// cant cast testing.T to testing.B
+func bSetup(b *testing.B) (storage.Store, func()) {
+	backend := Backend{}
+	tmpPath, err := ioutil.TempDir("", "gol_sqlite_test")
+	if err != nil {
+		b.Fatal("could not create temporary directory", err)
+	}
+
+	dbPath := path.Join(tmpPath, "sqltest.db")
+	u, _ := url.Parse(fmt.Sprintf("sqlite://%s", dbPath))
+	store, err := backend.Open(u)
+	if store == nil {
+		b.Fatal("could not get store for sqlite backend", err)
+	}
+
+	return store, func() {
+		store.Close()
+		os.RemoveAll(tmpPath)
+	}
+}
+
 func TestOpen(t *testing.T) {
 	store, tearDown := tSetup(t)
 	defer tearDown()
@@ -152,4 +173,15 @@ func TestClose(t *testing.T) {
 	store.Close()
 	err := store.Create(makePost("0815", "sqlite-test-delete", "Post creation on closed storage must fail!"))
 	tu.RequireNotNil(t, err)
+}
+
+// benchmarks
+
+func BenchmarkCreate(b *testing.B) {
+	store, tearDown := bSetup(b)
+	defer tearDown()
+
+	for i := 0; i < b.N; i++ {
+		store.Create(makePost(fmt.Sprintf("%d", i), "", ""))
+	}
 }
