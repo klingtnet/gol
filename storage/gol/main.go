@@ -143,3 +143,7 @@ func (s *Store) doRequest(method, path string, body io.Reader) (*http.Response, 
 
 	return resp, nil
 }
+
+func (s *Store) Close() error {
+	return nil
+}
