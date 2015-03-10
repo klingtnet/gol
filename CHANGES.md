@@ -4,6 +4,10 @@
 - saving posts without interupting writing them
 - a query interface (with nice syntax in Go, accessible via url
     parameters)
+- two new backends:
+    - `gol`: proxies to another instance of gol
+    - `multi`: writes to multiple storages, for example for backup or
+        "remote publishing"
 
 # 0.2.0 - Now we're getting fancy...
 
