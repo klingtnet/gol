@@ -45,7 +45,7 @@ type Store interface {
 	Update(post post.Post) error
 	Delete(id string) error
 
-	// Close() may or may not sync
+	Close() error
 
 	// Sync write to disk *now*
 }
