@@ -129,19 +129,19 @@ func (s *Store) Sync() error {
 func (s *Store) execQuery(query string, args ...interface{}) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Print("could not begin transaction", query)
+		log.Println("could not begin transaction", err)
 		return err
 	}
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		log.Print("could not prepare query", query)
+		log.Println("could not prepare query", err)
 		return err
 	}
 
 	_, err = stmt.Exec(args...)
 	if err != nil {
-		log.Print("could not execute statement", stmt)
+		log.Println("could not execute statement", err)
 		return err
 	}
 
