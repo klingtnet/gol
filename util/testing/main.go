@@ -18,6 +18,18 @@ func RequireEqual(t *testing.T, actual, expected interface{}) {
 	}
 }
 
+func RequireNotEqual(t *testing.T, actual, expected interface{}) {
+	if actual == expected {
+		t.Fatalf("%#v == %#v", actual, expected)
+	}
+}
+
+func ExpectNotEqual(t *testing.T, actual, expected interface{}) {
+	if actual == expected {
+		t.Errorf("%#v == %#v", actual, expected)
+	}
+}
+
 func ExpectNil(t *testing.T, value interface{}) {
 	if !isNil(value) {
 		t.Errorf("%#v should be nil", value)
