@@ -97,3 +97,8 @@ func (s *Store) Delete(id string) error {
 
 	return s.primary.Delete(id)
 }
+
+func (s *Store) Close() error {
+	// TODO
+	return nil
+}

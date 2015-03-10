@@ -101,3 +101,7 @@ func (s *Store) Delete(id string) error {
 	posts, _ := s.memoryBackend.FindAll()
 	return writePosts(s.path, posts)
 }
+
+func (s *Store) Close() error {
+	return nil
+}

@@ -80,3 +80,7 @@ func (s *Store) Delete(id string) error {
 	s.posts = newPosts
 	return nil
 }
+
+func (s *Store) Close() error {
+	return nil
+}
