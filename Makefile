@@ -5,10 +5,14 @@ NAME = gol-${VERSION}
 PORT ?= 5000
 SOURCES = $(shell find . -type f -name '*.go')
 SOURCE_DIRS = $(shell find . -type f -name '*.go' | xargs dirname | sort | uniq)
+CONTAINER_NAME = 'gol-docker'
 
 build: ${SOURCES} main.css
 	go get -d -v .
 	go build -ldflags "-X main.Version \"${VERSION}\"" main.go
+
+docker: build
+	docker build -t ${CONTAINER_NAME} .
 
 main.css:
 	@sassc -m assets/main.scss assets/main.css
