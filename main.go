@@ -151,6 +151,11 @@ func isLoggedIn(sessions map[string]string, r *http.Request) bool {
 	return ok
 }
 
+func redirectToLogin(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("/login?redirect_to=%s", url.QueryEscape(r.URL.Path))
+	http.Redirect(w, r, path, http.StatusSeeOther)
+}
+
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
@@ -236,7 +241,10 @@ func main() {
 						Value: newSession(sessions, username),
 					})
 
-					redirectPath := refererRedirectPath(r, "/")
+					redirectPath := r.URL.Query().Get("redirect_to")
+					if redirectPath == "" {
+						redirectPath = "/"
+					}
 					http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 				}
 			} else {
@@ -284,7 +292,7 @@ func main() {
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
 
 			if authenticator != nil && !isLoggedIn(sessions, r) {
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				redirectToLogin(w, r)
 				return
 			}
 
@@ -315,7 +323,7 @@ func main() {
 
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
 		if authenticator != nil && !isLoggedIn(sessions, r) {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			redirectToLogin(w, r)
 			return
 		}
 
@@ -357,7 +365,7 @@ func main() {
 			// already handle by p == nil above
 		} else if r.Method == "POST" {
 			if authenticator != nil && !isLoggedIn(sessions, r) {
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				redirectToLogin(w, r)
 				return
 			}
 
@@ -386,7 +394,7 @@ func main() {
 			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "DELETE" {
 			if authenticator != nil && !isLoggedIn(sessions, r) {
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				redirectToLogin(w, r)
 				return
 			}
 
@@ -401,7 +409,7 @@ func main() {
 
 	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
 		if authenticator != nil && !isLoggedIn(sessions, r) {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			redirectToLogin(w, r)
 			return
 		}
 
