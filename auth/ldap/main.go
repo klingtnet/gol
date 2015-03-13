@@ -41,9 +41,9 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 	dnTemplate = strings.Replace(dnTemplate, "{}", "%s", -1)
 
 	ldapAuth := Auth{
-		addr: u.Host,
+		addr:       u.Host,
 		dnTemplate: dnTemplate,
-		insecure: insecure,
+		insecure:   insecure,
 	}
 
 	return auth.Auth(&ldapAuth), nil
