@@ -33,7 +33,7 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 }
 
 func (a *Auth) Login(username, password string) error {
-	if a.mapping[username] != password {
+	if pw, ok := a.mapping[username]; !ok || pw != password {
 		return errors.New("invalid credentials")
 	}
 
