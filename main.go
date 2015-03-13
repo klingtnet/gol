@@ -140,7 +140,7 @@ var Version = "master"
 var assetBase = "/assets"
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
-var authUrl = pflag.String("authentication", "", "the authentication method to use")
+var authUrl = pflag.String("authentication", "insecure://joe:doe,jane:sane", "the authentication method to use")
 
 func init() {
 	if Environment == "production" {
@@ -271,6 +271,11 @@ func main() {
 	})
 
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
+		if authenticator != nil && !isLoggedIn(sessions, r) {
+			http.Error(w, "not authorized", http.StatusUnauthorized)
+			return
+		}
+
 		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
 	})
 
@@ -308,6 +313,11 @@ func main() {
 		} else if r.Method == "HEAD" {
 			// already handle by p == nil above
 		} else if r.Method == "POST" {
+			if authenticator != nil && !isLoggedIn(sessions, r) {
+				http.Error(w, "not authorized", http.StatusUnauthorized)
+				return
+			}
+
 			var newPost post.Post
 			if r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
 				newPost.Title = r.FormValue("title")
@@ -332,6 +342,11 @@ func main() {
 			store.Update(*p)
 			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "DELETE" {
+			if authenticator != nil && !isLoggedIn(sessions, r) {
+				http.Error(w, "not authorized", http.StatusUnauthorized)
+				return
+			}
+
 			err := store.Delete(id)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusNotFound)
@@ -342,6 +357,11 @@ func main() {
 	})
 
 	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
+		if authenticator != nil && !isLoggedIn(sessions, r) {
+			http.Error(w, "not authorized", http.StatusUnauthorized)
+			return
+		}
+
 		id := mux.Vars(r)["id"]
 		post, _ := store.FindById(id)
 		if post != nil {
