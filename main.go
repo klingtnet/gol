@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -103,6 +105,17 @@ func queryFromURL(u *url.URL, store storage.Store) ([]post.Post, error) {
 	return store.Find(*q)
 }
 
+func newSession(sessions map[string]string, username string) string {
+	randomBytes := make([]byte, 32)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		log.Println(err)
+	}
+	sessionId := base64.StdEncoding.EncodeToString(randomBytes)
+	sessions[username] = sessionId
+	return sessionId
+}
+
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
@@ -151,6 +164,9 @@ func main() {
 	}
 	fmt.Println(authenticator)
 
+	// username -> session
+	sessions := map[string]string{}
+
 	templates := templates.Templates(assetBase)
 
 	router := mux.NewRouter()
@@ -174,6 +190,10 @@ func main() {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnauthorized)
 			} else {
+				http.SetCookie(w, &http.Cookie{
+					Name:  "session",
+					Value: newSession(sessions, username),
+				})
 				w.Write([]byte("login successful!"))
 			}
 		} else {
