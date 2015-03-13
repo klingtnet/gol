@@ -10,7 +10,7 @@ import (
 
 type Backend struct{}
 
-type Auth struct{
+type Auth struct {
 	mapping map[string]string
 }
 
@@ -32,7 +32,7 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 	return &Auth{mapping}, nil
 }
 
-func (a Auth) Login(username, password string) error {
+func (a *Auth) Login(username, password string) error {
 	if a.mapping[username] != password {
 		return errors.New("invalid credentials")
 	}

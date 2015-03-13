@@ -108,7 +108,7 @@ var Version = "master"
 var assetBase = "/assets"
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
-var authUrl = pflag.String("authentication", "", "the authentication method to use")
+var authUrl = pflag.String("authentication", "insecure://joe:doe,jane:sane", "the authentication method to use")
 
 func init() {
 	if Environment == "production" {
@@ -141,14 +141,14 @@ func main() {
 		}
 	}
 
-	var authenticator *auth.Auth
+	var authenticator auth.Auth
 	if authUrl != nil && *authUrl != "" {
 		a, err := auth.Open(*authUrl)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println(a)
-		authenticator = &a
+		authenticator = a
 	}
 	fmt.Println(authenticator)
 
@@ -162,6 +162,22 @@ func main() {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		} else {
 			renderPosts(templates, w, posts)
+		}
+	})
+
+	router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			templates.ExecuteTemplate(w, "login", map[string]string{"title": "Login"})
+		} else if r.Method == "POST" {
+			username := r.FormValue("username")
+			password := r.FormValue("password")
+			err := authenticator.Login(username, password)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+			}
+			w.Write([]byte(fmt.Sprint(err)))
+		} else {
+			notImplemented(w)
 		}
 	})
 

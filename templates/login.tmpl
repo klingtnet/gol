@@ -1,0 +1,32 @@
+{{ define "login" }}
+{{ template "header" . }}
+
+<div class="row">
+    <h1>{{ .title }}</h1>
+    <form class="col s6" id="login" method="POST" action="/login">
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="username" type="text" class="validate">
+                <label for="username">Username</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="password" type="password" class="validate">
+                <label for="password">Password</label>
+            </div>
+        </div>
+
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            <i class="mdi-action-done left"></i>
+            Login
+        </button>
+        <a href="/" class="btn waves-effect waves-light red" type="submit" name="action">
+            <i class="mdi-navigation-close left"></i>
+            Cancel
+        </a>
+    </form>
+</div>
+
+{{ template "footer" . }}
+{{ end }}
