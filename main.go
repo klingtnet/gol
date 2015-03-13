@@ -198,26 +198,28 @@ func main() {
 		}
 	})
 
-	router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			templates.ExecuteTemplate(w, "login", map[string]string{"title": "Login"})
-		} else if r.Method == "POST" {
-			username := r.FormValue("username")
-			password := r.FormValue("password")
-			err := authenticator.Login(username, password)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusUnauthorized)
+	if authenticator != nil {
+		router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == "GET" {
+				templates.ExecuteTemplate(w, "login", map[string]string{"title": "Login"})
+			} else if r.Method == "POST" {
+				username := r.FormValue("username")
+				password := r.FormValue("password")
+				err := authenticator.Login(username, password)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusUnauthorized)
+				} else {
+					http.SetCookie(w, &http.Cookie{
+						Name:  "session",
+						Value: newSession(sessions, username),
+					})
+					w.Write([]byte("login successful!"))
+				}
 			} else {
-				http.SetCookie(w, &http.Cookie{
-					Name:  "session",
-					Value: newSession(sessions, username),
-				})
-				w.Write([]byte("login successful!"))
+				notImplemented(w)
 			}
-		} else {
-			notImplemented(w)
-		}
-	})
+		})
+	}
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		posts, err := queryFromURL(r.URL, store)
