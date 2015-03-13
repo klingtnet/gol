@@ -147,7 +147,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(a)
 		authenticator = a
 	}
 	fmt.Println(authenticator)
