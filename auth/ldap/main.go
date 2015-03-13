@@ -35,8 +35,7 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 	if dnTemplate == "" {
 		return nil, errors.New("no dnTemplate configured")
 	}
-	// fix circumvent uri restrictions
-	dnTemplate = strings.Replace(dnTemplate, ",", ";", -1)
+	// fix/circumvent uri restrictions
 	dnTemplate = strings.Replace(dnTemplate, ":", "=", -1)
 	dnTemplate = strings.Replace(dnTemplate, "{}", "%s", -1)
 
