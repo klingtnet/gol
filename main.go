@@ -140,7 +140,7 @@ var Version = "master"
 var assetBase = "/assets"
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
-var authUrl = pflag.String("authentication", "insecure://joe:doe,jane:sane", "the authentication method to use")
+var authUrl = pflag.String("authentication", "", "the authentication method to use")
 
 func init() {
 	if Environment == "production" {
@@ -181,7 +181,6 @@ func main() {
 		}
 		authenticator = a
 	}
-	fmt.Println(authenticator)
 
 	// username -> session
 	sessions := map[string]string{}
@@ -241,7 +240,7 @@ func main() {
 		} else if r.Method == "POST" { // POST creates a new post
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
 
-			if !isLoggedIn(sessions, r) {
+			if authenticator != nil && !isLoggedIn(sessions, r) {
 				http.Error(w, "not authorized", http.StatusUnauthorized)
 				return
 			}
