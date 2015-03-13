@@ -374,8 +374,6 @@ func main() {
 		}
 	})
 
-	// http.HandleFunc("/posts", ...) // GET = display all posts
-
 	if Environment == "development" {
 		// in development, serve local assets
 		router.PathPrefix("/assets").Handler(http.StripPrefix("/assets", http.FileServer(http.Dir("assets"))))
