@@ -174,8 +174,9 @@ func main() {
 			err := authenticator.Login(username, password)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnauthorized)
+			} else {
+				w.Write([]byte("login successful!"))
 			}
-			w.Write([]byte(fmt.Sprint(err)))
 		} else {
 			notImplemented(w)
 		}
