@@ -216,7 +216,7 @@ func main() {
 
 	if authenticator != nil {
 		router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-			if authenticator != nil && isLoggedIn(sessions, r) {
+			if isLoggedIn(sessions, r) {
 				redirectPath := refererRedirectPath(r, "/")
 				http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 				return
@@ -239,6 +239,23 @@ func main() {
 				}
 			} else {
 				notImplemented(w)
+			}
+		})
+
+		router.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == "GET" {
+				sessionCookie, err := r.Cookie("session")
+				if err == nil {
+					delete(sessions, sessionCookie.Value)
+					http.SetCookie(w, &http.Cookie{
+						Name:   "session",
+						Value:  "",
+						MaxAge: -1,
+					})
+				}
+
+				redirectPath := refererRedirectPath(r, "/")
+				http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 			}
 		})
 	}
