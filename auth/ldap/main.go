@@ -60,6 +60,7 @@ func (a Auth) Login(username, password string) error {
 	if err != nil && err.Err != nil {
 		return err
 	}
+	defer conn.Close()
 
 	err = conn.Bind(fmt.Sprintf(a.dnTemplate, username), password)
 	if err != nil && err.Err != nil {
