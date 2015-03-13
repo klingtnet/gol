@@ -8,6 +8,8 @@
     - `gol`: proxies to another instance of gol
     - `multi`: writes to multiple storages, for example for backup or
         "remote publishing"
+- support for authentication with pluggable providers
+    - existing backends: `ldap`, `insecure` (for testing)
 
 # 0.2.0 - Now we're getting fancy...
 
