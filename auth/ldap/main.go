@@ -3,7 +3,7 @@ package ldap
 import (
 	"errors"
 	"fmt"
-	"github.com/heyLu/ldap"
+	"github.com/vanackere/ldap"
 	"net/url"
 	"strings"
 
@@ -39,14 +39,14 @@ func (b Backend) Open(u *url.URL) (auth.Auth, error) {
 }
 
 func (a Auth) Login(username, password string) error {
-	conn, err := ldap.DialSSL("tcp", a.addr)
-	if err != nil && err.Err != nil {
+	conn, err := ldap.DialTLS("tcp", a.addr, nil)
+	if err != nil {
 		return err
 	}
 	defer conn.Close()
 
 	err = conn.Bind(fmt.Sprintf(a.dnTemplate, username), password)
-	if err != nil && err.Err != nil {
+	if err != nil {
 		return err
 	}
 
