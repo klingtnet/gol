@@ -2,13 +2,13 @@
   font-family: 'Droid Sans Mono';
   font-style: normal;
   font-weight: 400;
-  src: local('Droid Sans Mono'), local('DroidSansMono'), url(/assets/fonts/DroidSansMono.ttf) format('truetype'); }
+  src: local("Droid Sans Mono"), local("DroidSansMono"), url(/assets/fonts/DroidSansMono.ttf) format("truetype"); }
 
 @font-face {
   font-family: 'Source Code Pro';
   font-style: normal;
   font-weight: 400;
-  src: local('Source Code Pro'), local('SourceCodePro-Regular'), url(/assets/fonts/SourceCodePro-Regular.ttf) format('truetype'); }
+  src: local("Source Code Pro"), local("SourceCodePro-Regular"), url(/assets/fonts/SourceCodePro-Regular.ttf) format("truetype"); }
 
 #edit-button {
   top: 23px; }
@@ -20,11 +20,14 @@
   transition-timing-function: ease;
   transition-delay: 0;
   float: right; }
+
 .post:hover .post-actions {
   opacity: 1; }
+
 .post .post-content {
   font-size: 1.414rem;
   line-height: 1.8rem; }
+
 .post ul {
   padding-left: 1em; }
   .post ul li {
@@ -32,8 +35,10 @@
     list-style-type: disc; }
     .post ul li > p {
       display: inline-block; }
+
 .post img {
   max-width: 100%; }
+
 .post code {
   font-family: "Source Code Pro", "Droid Sans Mono", monospace; }
 
