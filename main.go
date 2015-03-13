@@ -284,7 +284,7 @@ func main() {
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
 
 			if authenticator != nil && !isLoggedIn(sessions, r) {
-				http.Error(w, "not authorized", http.StatusUnauthorized)
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
 				return
 			}
 
@@ -315,7 +315,7 @@ func main() {
 
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
 		if authenticator != nil && !isLoggedIn(sessions, r) {
-			http.Error(w, "not authorized", http.StatusUnauthorized)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
@@ -357,7 +357,7 @@ func main() {
 			// already handle by p == nil above
 		} else if r.Method == "POST" {
 			if authenticator != nil && !isLoggedIn(sessions, r) {
-				http.Error(w, "not authorized", http.StatusUnauthorized)
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
 				return
 			}
 
@@ -386,7 +386,7 @@ func main() {
 			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "DELETE" {
 			if authenticator != nil && !isLoggedIn(sessions, r) {
-				http.Error(w, "not authorized", http.StatusUnauthorized)
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
 				return
 			}
 
@@ -401,7 +401,7 @@ func main() {
 
 	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
 		if authenticator != nil && !isLoggedIn(sessions, r) {
-			http.Error(w, "not authorized", http.StatusUnauthorized)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
