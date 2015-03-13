@@ -112,8 +112,27 @@ func newSession(sessions map[string]string, username string) string {
 		log.Println(err)
 	}
 	sessionId := base64.StdEncoding.EncodeToString(randomBytes)
-	sessions[username] = sessionId
+	sessions[sessionId] = username
 	return sessionId
+}
+
+// returns (user, true) if valid session id
+func hasSession(sessions map[string]string, sessionId string) (string, bool) {
+	if username, ok := sessions[sessionId]; ok {
+		return username, true
+	}
+
+	return "", false
+}
+
+func isLoggedIn(sessions map[string]string, r *http.Request) bool {
+	sessionCookie, err := r.Cookie("session")
+	if err != nil {
+		return false
+	}
+
+	_, ok := hasSession(sessions, sessionCookie.Value)
+	return ok
 }
 
 var Environment = getEnv("ENVIRONMENT", "development")
@@ -221,6 +240,11 @@ func main() {
 			}
 		} else if r.Method == "POST" { // POST creates a new post
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
+
+			if !isLoggedIn(sessions, r) {
+				http.Error(w, "not authorized", http.StatusUnauthorized)
+				return
+			}
 
 			var post post.Post
 			if isJson {
