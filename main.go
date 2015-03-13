@@ -76,6 +76,22 @@ func notImplemented(w http.ResponseWriter) {
 	w.Write([]byte("not implemented"))
 }
 
+func refererRedirectPath(r *http.Request, defaultPath string) string {
+	referer := r.Referer()
+	if referer != "" {
+		refererUrl, err := url.Parse(referer)
+		if err != nil {
+			return defaultPath
+		}
+		if refererUrl.Host != r.URL.Host {
+			return defaultPath
+		}
+		return refererUrl.Path
+	} else {
+		return defaultPath
+	}
+}
+
 func urlHasQuery(u *url.URL) bool {
 	q := u.Query()
 	if len(q) == 0 {
@@ -200,6 +216,12 @@ func main() {
 
 	if authenticator != nil {
 		router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+			if authenticator != nil && isLoggedIn(sessions, r) {
+				redirectPath := refererRedirectPath(r, "/")
+				http.Redirect(w, r, redirectPath, http.StatusSeeOther)
+				return
+			}
+
 			if r.Method == "GET" {
 				templates.ExecuteTemplate(w, "login", map[string]string{"title": "Login"})
 			} else if r.Method == "POST" {

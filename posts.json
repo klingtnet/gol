@@ -2,7 +2,7 @@
 	{
 		"id": "8de7a320fab593608581d0e0dab53ac6",
 		"title": "Next up for authentication",
-		"content": "*Editor's note: \"authentification\" is not an english word. German and french authors, please fix your grammar!*\r\n\r\n- `redirect_to`/`Referer` (*Editor's note: HTTP/2.0 fixes the \"Referer\"?*)\r\n- ~~check auth also on `POST/DELETE /posts/{id}`~~\r\n    - `/posts/new`, `/posts/edit` are also checked\r\n- maybe hide edit stuff for logged-out users\r\n- implement `/logout`\r\n- add ui for `/login`/`logout`\r\n- ~~allow no auth at all again!~~\r\n- catch multiple logins (just redirect/notify, don't set cookie again.",
+		"content": "*Editor's note: \"authentification\" is not an english word. German and french authors, please fix your grammar!*\r\n\r\n- `redirect_to`/`Referer` (*Editor's note: HTTP/2.0 fixes the \"Referer\"?*)\r\n- ~~check auth also on `POST/DELETE /posts/{id}`~~\r\n    - `/posts/new`, `/posts/edit` are also checked\r\n- maybe hide edit stuff for logged-out users\r\n- implement `/logout`\r\n- add ui for `/login`/`logout`\r\n- ~~allow no auth at all again!~~\r\n- ~~catch multiple logins (just redirect/notify, don't set cookie again.~~",
 		"created": "2015-03-13T14:19:07.261669029+01:00"
 	},
 	{
