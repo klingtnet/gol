@@ -235,7 +235,9 @@ func main() {
 						Name:  "session",
 						Value: newSession(sessions, username),
 					})
-					w.Write([]byte("login successful!"))
+
+					redirectPath := refererRedirectPath(r, "/")
+					http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 				}
 			} else {
 				notImplemented(w)
