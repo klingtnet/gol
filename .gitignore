@@ -1,4 +1,8 @@
-main
-gol
+/main
+/gol
+/bin
 .*.swp
 .vimrc
+*.sublime-project
+*.sublime-workspace
+assets/*.css.map

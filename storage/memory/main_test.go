@@ -1,8 +1,10 @@
 package memory
 
 import (
+	"fmt"
 	"net/url"
 	"testing"
+	"time"
 
 	"../../post"
 )
@@ -27,5 +29,18 @@ func TestCreate(t *testing.T) {
 	posts, _ := store.FindAll()
 	if len(posts) != 1 {
 		t.Error("wrong number of posts:", len(posts))
+	}
+}
+
+func BenchmarkCreate(b *testing.B) {
+	store := &Store{}
+
+	for i := 0; i < b.N; i++ {
+		store.Create(post.Post{
+			Id:      fmt.Sprintf("%d", i),
+			Created: time.Now(),
+			Title:   "",
+			Content: "",
+		})
 	}
 }

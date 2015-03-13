@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'Droid Sans Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Droid Sans Mono'), local('DroidSansMono'), url(/assets/fonts/DroidSansMono.ttf) format('truetype');
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Source Code Pro'), local('SourceCodePro-Regular'), url(/assets/fonts/SourceCodePro-Regular.ttf) format('truetype');
+}
+
+#edit-button {
+	top: 23px;
+}
+
+.post {
+    .post-actions {
+        opacity: 0;
+        transition-property: opacity;
+        transition-duration: .5s;
+        transition-timing-function: ease;
+        transition-delay: 0;
+        float: right;
+    }
+
+    &:hover .post-actions {
+        opacity: 1;
+    }
+
+    .post-content {
+        font-size: 1.414rem;
+        line-height: 1.8rem;
+    }
+
+    ul {
+        padding-left: 1em;
+
+        li {
+            margin-left: 1em;
+            list-style-type: disc;
+
+            > p {
+                display: inline-block;
+            }
+        }
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    code {
+        font-family: "Source Code Pro", "Droid Sans Mono", monospace;
+    }
+}
+
+/*
+ * edit styles
+ */
+
+.markdown-input {
+    font-family: "Source Code Pro", "Droid Sans Mono", monospace;
+    /* materialize would override the font-size /wo !important  */
+    font-size: 1.25em !important;
+}
+
+.input-field textarea {
+	height: auto;
+	max-height: 37vh;
+	overflow-y: visible;
+	background-color: white;
+}
+
+#edit-tab, #preview-tab {
+    min-height: 50vh;
+}
+
+#preview-tab {
+    padding: 1em 0;
+}
+
+#preview-tab .post-actions {
+    display: none;
+}
+
+/*
+ * fullscreen styles
+ */
+
+#fullscreen-toggle {
+	position: absolute;
+	top: -0.25em;
+	right: 10px;
+	font-size: 3em;
+	color: #999;
+}
+
+#fullscreen-toggle:hover {
+	color: #333;
+}
+
+.input-field {
+    // smells like a hack and doesn't work in chrome at the moment
+    &:-moz-full-screen {
+    	font-size: 1.1em !important;
+	    background-color: white;
+
+        #fullscreen-toggle {
+            visibility: hidden;
+        }
+
+        #edit-content {
+            width: 80vw;
+            max-height: 100vh;
+            margin: 0 10%;
+        }
+    }
+}
+

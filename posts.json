@@ -6,6 +6,24 @@
 		"created": "2015-03-06T17:15:37.821841211+01:00"
 	},
 	{
+		"id": "81df52090942dabfe2702afbfffceb51",
+		"title": "A bunch of ideas",
+		"content": "- `.Meta`: stores *arbitrary data*\r\n    - backends decide what to do with it, can decide to ignore it\r\n    - intended to store backend-specific data and/or pass data through to the backend\r\n        - thus we need to change our backend interface to receive this data, especially the `Find` method\r\n        - one use-case is for the hypothetical datomic backend: to allow specifying the timestamp/transaction to use for retrieving data (`?meta[t]=\u003ct\u003e`)\r\n    - useful for prototyping\r\n        - e.g. try how tags, groups, public/private posts, drafts, etc would work, without having to modify *all* the backends at first\r\n    - there *is* the danger of using it for everything, but we'll have to resist it. and see how it works out\r\n- static rendering\r\n    - for our own docs, deployed on GitHub Pages (maybe even automatically by TravisCI?)\r\n    - we can reuse all our templates, for now just hide the edit buttons via CSS (`display: none` is your friend, but surely there's a better solution)\r\n- `gol migrate \u003csrc\u003e \u003cdest\u003e` (maybe call it `sync` or `push`?)\r\n    - `json` too slow? just switch to `sqlite`!\r\n    - schema change? `gol migrate`!\r\n    - hypothetical: don't like jekyll/wordpress, just use `gol migrate` (or the reverse: don't want to write your posts as files, but *do* want to use it for deployment/already have a cool style/whatever? use `gol migrate`)\r\n- misc:\r\n    - a shortcut for enabling the fullscreen mode\r\n    - a shortcut for submitting a post (`Ctrl-Enter`)\r\n    - we need a tool (or make it easy) to generate password hashes, you don't want to give your password to someone to get an account on their `gol` instance. (but we still don't want to do \"regular\" user management, e.g. via an API, with registration and all those things. just make it to do (for developers).)\r\n",
+		"created": "2015-03-10T18:53:14.20129402+01:00"
+	},
+	{
+		"id": "cc826404d2faf080ba9d1738d4a5e8b6",
+		"title": "Introducing the query interface",
+		"content": "## For users\r\n\r\nYou can search posts now!\r\n\r\nFind all kittens here: \u003chttp://notes.papill0n.org/?match=content:kitten\u003e\r\n\r\n## For developers\r\n\r\nWant to find out what posts about cats you wrote in the last week? Here you go:\r\n\r\n```go\r\nnow := time.Now()\r\nq, _ := storage.Query().\r\n            Match(\"content\", \"cat\").\r\n            Range(now.Add(-7*24*time.Hour), now)\r\n```\r\n\r\n## What's missing/open questions\r\n\r\n- default to `reverse` when sorting by created?\r\n- how should multiple matches be handled?\r\n    - the current implementation handles it as `AND`\r\n    - would be handy to have `match=content:cat\u0026match=content:kitten` return all results involving cats *OR* kittens",
+		"created": "2015-03-09T14:51:58.791656315+01:00"
+	},
+	{
+		"id": "2563f0d12a97f66cefeaaa2e6be6d1e1",
+		"title": "Imagining the ideal routing/request API",
+		"content": "There are a few things that we do that are currently... at least suboptimal:\n\n- `r.Method == \"GET\"`\n- `r.Header.Get(\"Content-Type\") == \"application/json\"\n- `/posts` != `/posts/`?\n\nThere should be a \"pretty\"/well-engineered way to do this. I.e., we're going to have to either find a library that does what we want or write one ourselves. Let's think about how the code should look like.\n\n```go\nrouter.Match(\"/posts\", func(w http.ResponseWriter, r *http.Request) {\n    renderer := negotiate(r) // if we don't find one, it'll be an error renderer?\n    renderer.render(w)\n})\n```",
+		"created": "2015-03-06T18:54:22.811328282+01:00"
+	},
+	{
 		"id": "5c006f42cf92323afddba19d5cf5a619",
 		"title": "Changing the templates",
 		"content": "The templates are now in `templates/*.tmpl` and `templates/shared/*.tmpl`.\r\n\r\nAfter changing them, you need to restart the server to see your changes. If you don't want to do this, you can use [our fork of gin](https://github.com/heyLu/gin) (install with `go get -v github.com/heyLu/gin`) which has support for restarting when the templates change.\r\n\r\nThere's also a `make` target for this: run `make watch` to watch `.go` and `.tmpl` files and then start changing things!",
@@ -14,7 +32,7 @@
 	{
 		"id": "afba23f74deef888d8b5902bb91dcd19",
 		"title": "Ideas for tomorrow",
-		"content": "- LDAP\r\n- sqlite backend\r\n- ~~markdown preview (tabbed)~~\r\n- ~~render single posts (see above)~~ (simply uses the `posts` template, passing only one post)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
+		"content": "- LDAP\r\n- ~~sqlite backend~~\r\n- ~~markdown preview (tabbed)~~\r\n- ~~render single posts (see above)~~ (simply uses the `posts` template, passing only one post)\r\n- experiment with post types\r\n- more tests\r\n\r\n## later\r\n\r\n- user accounts\r\n- public streams",
 		"created": "2015-03-05T19:48:22.614542642+01:00"
 	},
 	{
@@ -32,7 +50,7 @@
 	{
 		"id": "2e17c142291319144a7951d0c8dfce08",
 		"title": "More crazy ideas",
-		"content": "- a public feed\r\n- groups\r\n- make the title on the index page customizable (just \"gol\" sounds weird, maybe use the hostname if it's not localhost?)\r\n- ...",
+		"content": "- a public feed\r\n- groups\r\n- ~~make the title on the index page customizable (just \"gol\" sounds weird, maybe use the hostname if it's not localhost?)~~ (handled by moving to `.tmpl`)\r\n- ...",
 		"created": "2015-03-04T17:55:10.586950061+01:00"
 	},
 	{
@@ -74,7 +92,7 @@
 	{
 		"id": "f02d5a77c0f4a4953b856e5397df3d01",
 		"title": "Next up",
-		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- ~~pluggable storage backends~~\r\n- tests! (~~at least some~~; some more, please!)\r\n- markdown preview (either live or tabbed)\r\n- ~~cancel new post/edit~~\r\n- ~~mathjax support~~\r\n- ~~css *blingbling* :)~~",
+		"content": "- ~~list support (c'mon blackfriday)~~ (it wasn't blackfriday, but materialize)\r\n- users (including ldap)\r\n- ~~pluggable storage backends~~\r\n- tests! (~~at least some~~; some more, please!)\r\n- ~~markdown preview (either live or tabbed)~~\r\n- ~~cancel new post/edit~~\r\n- ~~mathjax support~~\r\n- ~~css *blingbling* :)~~",
 		"created": "2015-03-04T12:01:55.115207523+01:00"
 	},
 	{

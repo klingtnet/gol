@@ -11,6 +11,7 @@ import (
 
 	storage ".."
 	"../../post"
+	"../query"
 )
 
 type Backend struct{}
@@ -49,6 +50,10 @@ func (m Backend) Open(u *url.URL) (storage.Store, error) {
 		db: db,
 	})
 	return store, nil
+}
+
+func (s *Store) Find(q query.Query) ([]post.Post, error) {
+	return nil, errors.New("queries not supported")
 }
 
 // Store interface methods
@@ -124,19 +129,19 @@ func (s *Store) Sync() error {
 func (s *Store) execQuery(query string, args ...interface{}) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Print("could not begin transaction", query)
+		log.Println("could not begin transaction", err)
 		return err
 	}
 
 	stmt, err := s.db.Prepare(query)
 	if err != nil {
-		log.Print("could not prepare query", query)
+		log.Println("could not prepare query", err)
 		return err
 	}
 
 	_, err = stmt.Exec(args...)
 	if err != nil {
-		log.Print("could not execute statement", stmt)
+		log.Println("could not execute statement", err)
 		return err
 	}
 

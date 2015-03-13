@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/url"
 
-	"../../post"
 	storage ".."
+	"../../post"
 )
 
 type Backend struct{}
 
-type Store struct{
+type Store struct {
 	posts []post.Post
 }
 
@@ -28,6 +28,8 @@ func FromPosts(posts []post.Post) *Store {
 		posts: posts,
 	}
 }
+
+// `Find` is implemented in `./query.go`
 
 func (s *Store) FindById(id string) (*post.Post, error) {
 	for i, post := range s.posts {
@@ -79,3 +81,6 @@ func (s *Store) Delete(id string) error {
 	return nil
 }
 
+func (s *Store) Close() error {
+	return nil
+}

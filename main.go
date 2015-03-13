@@ -11,6 +11,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -20,8 +21,10 @@ import (
 	_ "./auth/ldap"
 	"./post"
 	"./storage"
+	_ "./storage/gol"
 	_ "./storage/json"
 	_ "./storage/memory"
+	_ "./storage/multi"
 	_ "./storage/sqlite"
 	"./templates"
 )
@@ -47,8 +50,18 @@ func getEnv(key, defaultValue string) string {
 func renderPosts(templates *template.Template, w http.ResponseWriter, posts []post.Post) {
 	m := make(map[string]interface{})
 	m["title"] = "gol"
-	m["posts"] = post.Reverse(post.ByDate(posts))
+	m["posts"] = posts
 	templates.ExecuteTemplate(w, "posts", m)
+}
+
+func createPost(title, content string) post.Post {
+	now := time.Now()
+	return post.Post{
+		Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
+		Title:   title,
+		Content: content,
+		Created: now,
+	}
 }
 
 func writeJson(w http.ResponseWriter, data interface{}) {
@@ -59,6 +72,35 @@ func writeJson(w http.ResponseWriter, data interface{}) {
 func notImplemented(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotImplemented)
 	w.Write([]byte("not implemented"))
+}
+
+func urlHasQuery(u *url.URL) bool {
+	q := u.Query()
+	if len(q) == 0 {
+		return false
+	}
+
+	queryParams := []string{"id", "title", "start", "end", "sort", "reverse", "match", "range"}
+	for _, p := range queryParams {
+		if _, ok := q[p]; ok {
+			return true
+		}
+	}
+
+	return false
+}
+
+func queryFromURL(u *url.URL, store storage.Store) ([]post.Post, error) {
+	defaultQuery, _ := storage.Query().Reverse().Build()
+	if !urlHasQuery(u) {
+		return store.Find(*defaultQuery)
+	}
+
+	q, err := storage.QueryFromURL(u)
+	if err != nil {
+		return nil, err
+	}
+	return store.Find(*q)
 }
 
 var Environment = getEnv("ENVIRONMENT", "development")
@@ -79,9 +121,24 @@ func init() {
 func main() {
 	pflag.Parse()
 
-	store, err := storage.Open(*storageUrl)
-	if err != nil {
-		log.Fatal(err)
+	var store storage.Store
+	storageUrls := strings.Split(*storageUrl, ",")
+	if len(storageUrls) > 1 {
+		multiUrl := fmt.Sprintf("multi://?primary=%s", url.QueryEscape(storageUrls[0]))
+		for _, storageUrl := range storageUrls[1:] {
+			multiUrl = fmt.Sprintf("%s&secondary=%s", multiUrl, url.QueryEscape(storageUrl))
+		}
+		var err error
+		store, err = storage.Open(multiUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		var err error
+		store, err = storage.Open(*storageUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	var authenticator *auth.Auth
@@ -100,30 +157,41 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		posts, err := store.FindAll()
+		posts, err := queryFromURL(r.URL, store)
 		if err != nil {
-			log.Println("Warning: Could not read posts.json:", err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			renderPosts(templates, w, posts)
 		}
-		renderPosts(templates, w, posts)
 	})
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-		posts, _ := store.FindAll()
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(posts)
+		posts, err := queryFromURL(r.URL, store)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(posts)
+		}
 	}).Methods("GET").Headers("Content-Type", "application/json")
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
-			posts, _ := store.FindAll()
-			renderPosts(templates, w, posts)
+			posts, err := queryFromURL(r.URL, store)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+			} else {
+				renderPosts(templates, w, posts)
+			}
 		} else if r.Method == "POST" { // POST creates a new post
-			now := time.Now()
-			post := post.Post{
-				Id:      fmt.Sprintf("%x", md5.Sum(toByteSlice(now.UnixNano()))),
-				Title:   r.FormValue("title"),
-				Content: r.FormValue("content"),
-				Created: now,
+			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
+
+			var post post.Post
+			if isJson {
+				json.NewDecoder(r.Body).Decode(&post)
+				post = createPost(post.Title, post.Content)
+			} else {
+				post = createPost(r.FormValue("title"), r.FormValue("content"))
 			}
 
 			err := store.Create(post)
@@ -132,7 +200,12 @@ func main() {
 				return
 			}
 
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			if isJson {
+				w.WriteHeader(http.StatusAccepted)
+				writeJson(w, post)
+			} else {
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+			}
 		} else {
 			notImplemented(w)
 		}
@@ -188,6 +261,7 @@ func main() {
 					http.Error(w, err.Error(), http.StatusBadRequest)
 				}
 				w.WriteHeader(http.StatusAccepted)
+				writeJson(w, newPost)
 			}
 
 			if newPost.Title != "" {

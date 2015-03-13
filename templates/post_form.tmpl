@@ -11,13 +11,18 @@
 					</ul>
 				</div>
 
-				<form id="edit-post" method="POST" action="/posts{{ if .post }}/{{ .post.Id }}{{ end }}"{{ if .post }}data-post-created="{{ .post.Created | isoTime }}"{{ end }}>
+				{{ if .post }}
+				<form id="edit-post" method="POST" action="/posts/{{ .post.Id }}" data-post-id="{{ .post.Id }}" data-post-created="{{ .post.Created | isoTime }}">
+				{{ else }}
+				<form id="edit-post" method="POST" action="/posts">
+				{{ end }}
 					<div id="edit-tab" class="col s12">
 						<div class="input-field">
 							<input id="edit-title" class="markdown-input" name="title" autofocus required type="text" value="{{ .post.Title }}" />
 							<label for="edit-title">Titlemania</label>
 						</div>
 						<div class="input-field">
+							<a id="fullscreen-toggle" href="#"><i class="mdi-navigation-fullscreen"></i></a>
 							<textarea id="edit-content" class="materialize-textarea markdown-input" name="content" rows="80" cols="100">{{ .post.Content }}</textarea>
 							<label for="edit-content">Your thoughts.</label>
 						</div>
