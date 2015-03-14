@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -16,6 +18,9 @@ import (
 	"strings"
 	"time"
 
+	"./auth"
+	_ "./auth/insecure"
+	_ "./auth/ldap"
 	"./post"
 	"./storage"
 	_ "./storage/gol"
@@ -71,6 +76,22 @@ func notImplemented(w http.ResponseWriter) {
 	w.Write([]byte("not implemented"))
 }
 
+func refererRedirectPath(r *http.Request, defaultPath string) string {
+	referer := r.Referer()
+	if referer != "" {
+		refererUrl, err := url.Parse(referer)
+		if err != nil {
+			return defaultPath
+		}
+		if refererUrl.Host != r.URL.Host {
+			return defaultPath
+		}
+		return refererUrl.Path
+	} else {
+		return defaultPath
+	}
+}
+
 func urlHasQuery(u *url.URL) bool {
 	q := u.Query()
 	if len(q) == 0 {
@@ -100,11 +121,47 @@ func queryFromURL(u *url.URL, store storage.Store) ([]post.Post, error) {
 	return store.Find(*q)
 }
 
+func newSession(sessions map[string]string, username string) string {
+	randomBytes := make([]byte, 32)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		log.Println(err)
+	}
+	sessionId := base64.StdEncoding.EncodeToString(randomBytes)
+	sessions[sessionId] = username
+	return sessionId
+}
+
+// returns (user, true) if valid session id
+func hasSession(sessions map[string]string, sessionId string) (string, bool) {
+	if username, ok := sessions[sessionId]; ok {
+		return username, true
+	}
+
+	return "", false
+}
+
+func isLoggedIn(sessions map[string]string, r *http.Request) bool {
+	sessionCookie, err := r.Cookie("session")
+	if err != nil {
+		return false
+	}
+
+	_, ok := hasSession(sessions, sessionCookie.Value)
+	return ok
+}
+
+func redirectToLogin(w http.ResponseWriter, r *http.Request) {
+	path := fmt.Sprintf("/login?redirect_to=%s", url.QueryEscape(r.URL.Path))
+	http.Redirect(w, r, path, http.StatusSeeOther)
+}
+
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var assetBase = "/assets"
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
+var authUrl = pflag.String("authentication", "insecure://joe:doe,jane:sane", "the authentication method to use")
 
 func init() {
 	if Environment == "production" {
@@ -137,6 +194,18 @@ func main() {
 		}
 	}
 
+	var authenticator auth.Auth
+	if authUrl != nil && *authUrl != "" {
+		a, err := auth.Open(*authUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
+		authenticator = a
+	}
+
+	// username -> session
+	sessions := map[string]string{}
+
 	templates := templates.Templates(assetBase)
 
 	router := mux.NewRouter()
@@ -149,6 +218,57 @@ func main() {
 			renderPosts(templates, w, posts)
 		}
 	})
+
+	if authenticator != nil {
+		router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+			if isLoggedIn(sessions, r) {
+				redirectPath := refererRedirectPath(r, "/")
+				http.Redirect(w, r, redirectPath, http.StatusSeeOther)
+				return
+			}
+
+			if r.Method == "GET" {
+				templates.ExecuteTemplate(w, "login", map[string]string{"title": "Login"})
+			} else if r.Method == "POST" {
+				username := r.FormValue("username")
+				password := r.FormValue("password")
+				err := authenticator.Login(username, password)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusUnauthorized)
+				} else {
+					http.SetCookie(w, &http.Cookie{
+						Name:  "session",
+						Value: newSession(sessions, username),
+					})
+
+					redirectPath := r.URL.Query().Get("redirect_to")
+					if redirectPath == "" {
+						redirectPath = "/"
+					}
+					http.Redirect(w, r, redirectPath, http.StatusSeeOther)
+				}
+			} else {
+				notImplemented(w)
+			}
+		})
+
+		router.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == "GET" {
+				sessionCookie, err := r.Cookie("session")
+				if err == nil {
+					delete(sessions, sessionCookie.Value)
+					http.SetCookie(w, &http.Cookie{
+						Name:   "session",
+						Value:  "",
+						MaxAge: -1,
+					})
+				}
+
+				redirectPath := refererRedirectPath(r, "/")
+				http.Redirect(w, r, redirectPath, http.StatusSeeOther)
+			}
+		})
+	}
 
 	router.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
 		posts, err := queryFromURL(r.URL, store)
@@ -170,6 +290,11 @@ func main() {
 			}
 		} else if r.Method == "POST" { // POST creates a new post
 			isJson := strings.Contains(r.Header.Get("Content-Type"), "application/json")
+
+			if authenticator != nil && !isLoggedIn(sessions, r) {
+				redirectToLogin(w, r)
+				return
+			}
 
 			var post post.Post
 			if isJson {
@@ -197,6 +322,11 @@ func main() {
 	})
 
 	router.HandleFunc("/posts/new", func(w http.ResponseWriter, r *http.Request) {
+		if authenticator != nil && !isLoggedIn(sessions, r) {
+			redirectToLogin(w, r)
+			return
+		}
+
 		templates.ExecuteTemplate(w, "post_form", map[string]string{"title": "Write a new post!"})
 	})
 
@@ -234,6 +364,11 @@ func main() {
 		} else if r.Method == "HEAD" {
 			// already handle by p == nil above
 		} else if r.Method == "POST" {
+			if authenticator != nil && !isLoggedIn(sessions, r) {
+				redirectToLogin(w, r)
+				return
+			}
+
 			var newPost post.Post
 			if r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
 				newPost.Title = r.FormValue("title")
@@ -258,6 +393,11 @@ func main() {
 			store.Update(*p)
 			json.NewEncoder(w).Encode(p)
 		} else if r.Method == "DELETE" {
+			if authenticator != nil && !isLoggedIn(sessions, r) {
+				redirectToLogin(w, r)
+				return
+			}
+
 			err := store.Delete(id)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusNotFound)
@@ -268,6 +408,11 @@ func main() {
 	})
 
 	router.HandleFunc("/posts/{id}/edit", func(w http.ResponseWriter, r *http.Request) {
+		if authenticator != nil && !isLoggedIn(sessions, r) {
+			redirectToLogin(w, r)
+			return
+		}
+
 		id := mux.Vars(r)["id"]
 		post, _ := store.FindById(id)
 		if post != nil {
@@ -279,8 +424,6 @@ func main() {
 			http.NotFound(w, r)
 		}
 	})
-
-	// http.HandleFunc("/posts", ...) // GET = display all posts
 
 	if Environment == "development" {
 		// in development, serve local assets
