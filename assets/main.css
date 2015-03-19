@@ -33,8 +33,6 @@
   .post ul li {
     margin-left: 1em;
     list-style-type: disc; }
-    .post ul li > p {
-      display: inline-block; }
 
 .post img {
   max-width: 100%; }
