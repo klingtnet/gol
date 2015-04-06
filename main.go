@@ -161,7 +161,7 @@ var Version = "master"
 var assetBase = "/assets"
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
-var authUrl = pflag.String("authentication", "insecure://joe:doe,jane:sane", "the authentication method to use")
+var authUrl = pflag.String("authentication", "", "the authentication method to use")
 
 func init() {
 	if Environment == "production" {
