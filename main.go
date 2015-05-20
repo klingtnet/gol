@@ -432,17 +432,19 @@ func main() {
 
 	http.Handle("/", router)
 
+	host := getEnv("HOST", "localhost")
 	port := getEnv("PORT", "5000")
+	addr := fmt.Sprintf("%s:%s", host, port)
 	if *ssl == "" {
-		fmt.Printf("Listening on http://0.0.0.0:%s\n", port)
-		log.Fatal(http.ListenAndServe(":"+port, nil))
+		fmt.Printf("Listening on http://%s\n", addr)
+		log.Fatal(http.ListenAndServe(addr, nil))
 	} else {
 		certAndKey := strings.Split(*ssl, ",")
 		if len(certAndKey) != 2 {
 			fmt.Println("Error: -ssl needs server.crt,server.key as arguments")
 			os.Exit(1)
 		}
-		fmt.Printf("Listening on https://0.0.0.0:%s\n", port)
-		log.Fatal(http.ListenAndServeTLS(":"+port, certAndKey[0], certAndKey[1], nil))
+		fmt.Printf("Listening on https://%s\n", addr)
+		log.Fatal(http.ListenAndServeTLS(addr, certAndKey[0], certAndKey[1], nil))
 	}
 }
