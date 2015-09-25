@@ -9,7 +9,7 @@ CONTAINER_NAME = 'gol-docker'
 
 build: ${SOURCES} assets/main.css
 	go get -d -v .
-	go build -ldflags "-X main.Version \"${VERSION}\"" main.go
+	go build -ldflags "-X main.Version=\"${VERSION}\"" main.go
 
 assets/main.css: assets/main.scss
 	sassc -m assets/main.scss assets/main.css
