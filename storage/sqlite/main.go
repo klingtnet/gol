@@ -75,7 +75,7 @@ func (s *Store) FindById(id string) (*post.Post, error) {
 }
 
 func (s *Store) FindAll() ([]post.Post, error) {
-	rows, err := s.db.Query("SELECT id, created, title, content FROM posts")
+	rows, err := s.db.Query("SELECT id, created, title, content FROM posts ORDER BY created DESC")
 	if err != nil {
 		return nil, err
 	}
