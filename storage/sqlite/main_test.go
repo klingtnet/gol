@@ -85,7 +85,11 @@ func TestFind(t *testing.T) {
 	post := makePost("0815", "sqlite-test-find", "Testing store.Find()")
 	store.Create(post)
 
-	//TODO: needs the query interface
+	q, _ := storage.Query().Find("id", "0815").Build()
+	foundPosts, _ := store.Find(*q)
+
+	tu.RequireEqual(t, len(foundPosts), 1)
+	comparePost(t, &foundPosts[0], &post)
 }
 
 func TestFindById(t *testing.T) {
