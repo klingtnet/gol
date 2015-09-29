@@ -23,7 +23,7 @@ func makePost(id, title, content string) post.Post {
 	}
 }
 
-func comparePosts(t *testing.T, a, b *post.Post) {
+func comparePost(t *testing.T, a, b *post.Post) {
 	tu.RequireEqual(t, a.Id, b.Id)
 	tu.RequireEqual(t, a.Created.Unix(), b.Created.Unix())
 	tu.RequireEqual(t, a.Title, b.Title)
@@ -97,7 +97,7 @@ func TestFindById(t *testing.T) {
 
 	foundPost, err := store.FindById(post.Id)
 	tu.RequireNil(t, err)
-	comparePosts(t, foundPost, &post)
+	comparePost(t, foundPost, &post)
 }
 
 func TestFindAll(t *testing.T) {
@@ -118,7 +118,7 @@ func TestFindAll(t *testing.T) {
 	for _, foundPost := range foundPosts {
 		for _, post := range posts {
 			if foundPost.Id == post.Id {
-				comparePosts(t, &foundPost, &post)
+				comparePost(t, &foundPost, &post)
 			}
 		}
 	}
@@ -138,7 +138,7 @@ func TestCreate(t *testing.T) {
 	foundPost, _ := store.FindById("0815")
 
 	tu.RequireNotNil(t, foundPost)
-	comparePosts(t, foundPost, &post)
+	comparePost(t, foundPost, &post)
 }
 
 func TestUpdate(t *testing.T) {
@@ -152,7 +152,7 @@ func TestUpdate(t *testing.T) {
 	store.Update(updatedPost)
 	foundPost, _ := store.FindById("0815")
 	tu.RequireNotEqual(t, foundPost.Content, post.Content)
-	comparePosts(t, foundPost, &updatedPost)
+	comparePost(t, foundPost, &updatedPost)
 }
 
 func TestDelete(t *testing.T) {
