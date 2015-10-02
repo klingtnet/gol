@@ -37,3 +37,6 @@ watch: ${GOPATH}/bin/gin
 ${GOPATH}/bin/gin:
 	@echo -e "\n\033[1mError: install 'gin' with 'go get -v github.com/heyLu/gin' first\033[0m\n"
 	@exit 1
+
+clean:
+	rm -f gol
