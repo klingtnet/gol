@@ -1,9 +1,10 @@
 package insecure
 
 import (
+	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/url"
-	"strings"
 
 	auth ".."
 )
@@ -19,17 +20,18 @@ func init() {
 }
 
 func (b Backend) Open(u *url.URL) (auth.Auth, error) {
-	mapping := make(map[string]string)
-	mappings := strings.Split(u.Host, ",")
-	for _, m := range mappings {
-		s := strings.Split(m, ":")
-		if len(s) != 2 {
-			return nil, errors.New("invalid user password mapping, format must be 'joe:oops,hey:there'")
-		}
-		mapping[s[0]] = s[1]
+	usersJson, err := ioutil.ReadFile(u.Host)
+	if err != nil {
+		return nil, err
 	}
 
-	return &Auth{mapping}, nil
+	userCredentials := make(map[string]string)
+	err = json.Unmarshal(usersJson, &userCredentials)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Auth{userCredentials}, nil
 }
 
 func (a *Auth) Login(username, password string) error {
