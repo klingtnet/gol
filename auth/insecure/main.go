@@ -20,7 +20,7 @@ func init() {
 }
 
 func (b Backend) Open(u *url.URL) (auth.Auth, error) {
-	usersJson, err := ioutil.ReadFile(u.Host)
+	usersJson, err := ioutil.ReadFile(u.Host + u.Path)
 	if err != nil {
 		return nil, err
 	}
