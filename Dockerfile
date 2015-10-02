@@ -1,4 +1,4 @@
-FROM golang:1.4
+FROM golang:latest
 
 WORKDIR /opt/gol
 RUN  useradd --home-dir /opt/gol gol
@@ -11,6 +11,4 @@ RUN  cd /opt/gol;\
 
 USER gol
 
-# todo: change executable name
-CMD [ "/opt/gol/main" ]
-
+CMD [ "/opt/gol/gol" ]
