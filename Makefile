@@ -1,11 +1,11 @@
 all: build
 
 VERSION ?= $(shell git describe --always --tags)
-NAME = gol-${VERSION}
+NAME := gol-${VERSION}
 PORT ?= 5000
-SOURCES = $(shell find . -type f -name '*.go')
-SOURCE_DIRS = $(shell find . -type f -name '*.go' | xargs dirname | sort | uniq)
-CONTAINER_NAME = 'gol-docker'
+SOURCES := $(shell find . -type f -name '*.go')
+SOURCE_DIRS := $(shell find . -type f -name '*.go' | xargs dirname | sort | uniq)
+CONTAINER_NAME := 'gol-docker'
 
 build: ${SOURCES} assets/main.css
 	go get -d -v .
