@@ -166,7 +166,7 @@ var authUrl = pflag.String("authentication", "", "the authentication method to u
 
 func init() {
 	if Environment == "production" {
-		assetBase = fmt.Sprintf("https://cdn.rawgit.com/KLINGTdotNET/gol/%s/assets", Version)
+		assetBase = fmt.Sprintf("https://cdn.rawgit.com/klingtnet/gol/%s/assets", Version)
 	}
 
 	fmt.Printf("gol - %s (%s)\n", Version, Environment)
