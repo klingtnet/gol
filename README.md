@@ -1,8 +1,8 @@
-# gol - a simple golang powered logbook
+# gol - A Simple Golang Powered Logbook
 
 Pronounced "goal" (/ɡoʊl/).
 
-## installation
+## Installation
 
 To get started, download the [latest release](https://github.com/KLINGTdotNET/gol/releases/latest),
 unpack it somewhere and run the `main` binary in there.
@@ -22,12 +22,12 @@ $ ./main --ssl server.crt,server.key
 Listening on https://0.0.0.0:5000
 ```
 
-### as docker container
+### As Docker Container
 
 - build the container `docker build -t gol .`
 - run the container `docker run -p 5000:5000 gol`
 
-## dependencies
+## Dependencies
 
 `gol` uses the following libraries (which are awesome):
 
@@ -50,6 +50,6 @@ If vim freezes for some seconds when you save a `.go` file, run [this](https://g
 let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 ```
 
-## license
+## License
 
 `gol` is licensed under the GNU GPL.
