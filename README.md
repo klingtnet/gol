@@ -42,6 +42,14 @@ Listening on https://0.0.0.0:5000
 
 Thanks for writing those libraries!
 
+## Development
+
+If vim freezes for some seconds when you save a `.go` file, run [this](https://github.com/fatih/vim-go/issues/144#ref-commit-6af745e):
+
+```vim
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+```
+
 ## license
 
 `gol` is licensed under the GNU GPL.
