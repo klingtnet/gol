@@ -35,9 +35,6 @@ release: gol test
 	tar -caf ${NAME}-linux.tar.gz ${NAME}
 	rm -rf ${NAME}
 
-run: gol
-	./$@
-
 watch: ${GOPATH}/bin/gin
 	@${GOPATH}/bin/gin --appPort ${PORT} --immediate --bin main run
 
