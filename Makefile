@@ -16,7 +16,7 @@ deps:
 
 gol: ${SOURCES} assets/main.css
 	go get -d -v .
-	go build -o $@ -ldflags "-X main.Version=\"${VERSION}\"" main.go
+	go build -o $@ -ldflags "-X gol.Version=\"${VERSION}\"" gol.go
 
 assets/main.css: assets/main.scss
 	bin/sassc -m assets/main.scss assets/main.css

@@ -158,7 +158,8 @@ func redirectToLogin(w http.ResponseWriter, r *http.Request) {
 
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
-var assetBase = "/assets"
+var templateBase = pflag.String("templates", "/templates", "templates path")
+var assetBase = pflag.String("assets", "/assets", "assets path")
 var ssl = pflag.String("ssl", "", "enable ssl (give server.crt,server.key as value)")
 var storageUrl = pflag.String("storage", "json://posts.json", "the storage to connect to")
 var authUrl = pflag.String("authentication", "", "the authentication method to use")
