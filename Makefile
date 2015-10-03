@@ -19,7 +19,7 @@ gol: ${SOURCES} assets/main.css
 	go build -o $@ -ldflags "-X main.Version=\"${VERSION}\"" main.go
 
 assets/main.css: assets/main.scss
-	sassc -m assets/main.scss assets/main.css
+	bin/sassc -m assets/main.scss assets/main.css
 
 docker: gol
 	docker build -t ${CONTAINER_NAME} .
