@@ -1,4 +1,4 @@
-all: gol
+.PHONY: all clean deps docker test watch
 
 VERSION ?= $(shell git describe --always --tags)
 NAME := gol-${VERSION}
