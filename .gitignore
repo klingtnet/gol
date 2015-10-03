@@ -1,6 +1,7 @@
 /main
 /gol
 /bin
+.go/
 .*.swp
 .vimrc
 *.sublime-project
