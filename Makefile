@@ -8,6 +8,8 @@ SOURCE_DIRS := $(shell find . -type f -name '*.go' | xargs dirname | sort | uniq
 CONTAINER_NAME := 'gol-docker'
 GOPATH := $(PWD)/.go
 
+all: gol
+
 deps:
 	go get -v -d ./...
 	/bin/bash -c "go list -f '{{ join .Imports \"\n\" }}' ./... | grep -v '^_' | sort | uniq | xargs go get -v"
