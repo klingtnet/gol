@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -156,10 +157,35 @@ func redirectToLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, path, http.StatusSeeOther)
 }
 
+func getTemplateBasePath(customLocation string) (string, error) {
+	userHome := getEnv("HOME", "")
+	workingDir := getEnv("PWD", "")
+	basePaths := []string{customLocation,
+		path.Join(userHome, "/.local/share/gol/templates"),
+		"/usr/share/gol/templates",
+		path.Join(workingDir, "templates")}
+	basePathFound := ""
+	for _, basePath := range basePaths {
+		_, err := os.Stat(basePath)
+		if err != nil {
+			if os.IsNotExist(err) {
+				continue
+			} else {
+				return "", nil
+			}
+		} else {
+			basePathFound = basePath
+			break
+		}
+	}
+
+	return basePathFound, nil
+}
+
 var Environment = getEnv("ENVIRONMENT", "development")
 var Version = "master"
 var templateBase = pflag.String("templates",
-	"/templates",
+	"",
 	"templates path")
 var assetBase = pflag.String("assets",
 	fmt.Sprintf("https://cdn.rawgit.com/klingtnet/gol/%s/assets", Version),
@@ -217,7 +243,14 @@ func main() {
 	// username -> session
 	sessions := map[string]string{}
 
-	templates := templates.Templates(*assetBase)
+	templBasePath, err := getTemplateBasePath(*templateBase)
+	if err != nil || templBasePath == "" {
+		log.Print("Could not get template base path!")
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Using template base path: %s\n", templBasePath)
+	templates := templates.Templates(templBasePath)
 
 	router := mux.NewRouter()
 
