@@ -58,7 +58,7 @@ func buildSqlQuery(q query.Query) (string, error) {
 	}
 	sqlQuery.Where = strings.Join(whereClauses, "\nAND ")
 	if sqlQuery.Where == "" {
-		sqlQuery.Where = "TRUE"
+		sqlQuery.Where = "1=1"
 	}
 
 	sqlQuery.Order = "ASC"
