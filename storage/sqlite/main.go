@@ -28,6 +28,12 @@ func setup(db *sql.DB) error {
 	creatTableStmt := "CREATE TABLE IF NOT EXISTS posts (id TEXT NOT NULL PRIMARY KEY, created DATETIME, title TEXT, content TEXT)"
 	// db.Exec does not return results
 	_, err := db.Exec(creatTableStmt)
+	if err != nil {
+		return err
+	}
+
+	createIndexStmt := "CREATE UNIQUE INDEX IF NOT EXISTS idIdx ON posts (id)"
+	_, err = db.Exec(createIndexStmt)
 	return err
 }
 
