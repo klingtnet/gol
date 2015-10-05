@@ -250,7 +250,7 @@ func main() {
 	}
 
 	fmt.Printf("Using template base path: %s\n", templBasePath)
-	templates := templates.Templates(templBasePath)
+	templates := templates.Templates(templBasePath, *assetBase)
 
 	router := mux.NewRouter()
 

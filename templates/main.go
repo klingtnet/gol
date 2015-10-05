@@ -5,10 +5,11 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 	"html/template"
+	"path"
 	"time"
 )
 
-func Templates(assetBase string) *template.Template {
+func Templates(templBase string, assetBase string) *template.Template {
 	sanitizePolicy := bluemonday.UGCPolicy()
 	sanitizePolicy.AllowElements("iframe", "audio", "video")
 	sanitizePolicy.AllowAttrs("width", "height", "src").OnElements("iframe", "audio", "video", "img")
@@ -37,10 +38,10 @@ func Templates(assetBase string) *template.Template {
 
 	// shared templates (must be loaded first to be availlable in the
 	// page templates)
-	template.Must(templateTree.ParseGlob("templates/shared/*.tmpl"))
+	template.Must(templateTree.ParseGlob(path.Join(templBase, "templates/shared/*.tmpl")))
 
 	// page templates
-	template.Must(templateTree.ParseGlob("templates/*.tmpl"))
+	template.Must(templateTree.ParseGlob(path.Join(templBase, "templates/*.tmpl")))
 
 	return templateTree
 }
