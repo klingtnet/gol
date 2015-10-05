@@ -2,12 +2,13 @@
 
 Pronounced "goal" (/ɡoʊl/).
 
-## Installation
+## Build
 
 To get started, download the [latest release](https://github.com/KLINGTdotNET/gol/releases/latest),
 unpack it somewhere and run the `main` binary in there.
 
 ```sh
+$ source .env
 $ make
 $ ./main
 Listening on http://0.0.0.0:5000
