@@ -1,0 +1,2 @@
+# environment file for gol, default location /etc/sysconfig
+GOL_PORT=20480

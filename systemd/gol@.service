@@ -1,0 +1,13 @@
+[Unit]
+Description=gol
+
+[Service]
+Type=simple
+User=%I
+Environment=STNORESTART=yes
+EnvironmentFile=/etc/sysconfig/gol
+ExecStart=sh -c "PORT=${GOL_PORT} /usr/bin/gol"
+Restart=on-success
+
+[Install]
+WantedBy=default.target
