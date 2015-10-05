@@ -23,6 +23,12 @@ $ ./main --ssl server.crt,server.key
 Listening on https://0.0.0.0:5000
 ```
 
+## Install
+
+```sh
+make install
+```
+
 ### As Docker Container
 
 - build the container `docker build -t gol .`
