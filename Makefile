@@ -43,7 +43,7 @@ ${GOPATH}/bin/gin:
 	@echo -e "\n\033[1mError: install 'gin' with 'go get -v github.com/heyLu/gin' first\033[0m\n"
 	@exit 1
 
-install:
+install: gol
 	install -Dm 755 gol 		/usr/bin/gol
 	install -dm 755 templates 	$(PREFIX)/gol/templates
 	cp -r 			templates 	$(PREFIX)/gol/templates
